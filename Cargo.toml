@@ -1,3 +1,81 @@
+[package]
+name = "graphitepdf"
+description = "A Rust PDF rendering engine for layout, composition, and rendering pipelines."
+documentation = "https://docs.rs/graphitepdf"
+keywords = [
+    "pdf",
+    "renderer",
+    "layout",
+    "document",
+    "graphics",
+]
+
+[package.edition]
+workspace = true
+
+[package.rust-version]
+workspace = true
+
+[package.version]
+workspace = true
+
+[package.homepage]
+workspace = true
+
+[package.categories]
+workspace = true
+
+[package.license-file]
+workspace = true
+
+[package.repository]
+workspace = true
+
+[dependencies.graphitepdf-document]
+workspace = true
+
+[dependencies.graphitepdf-errors]
+workspace = true
+
+[dependencies.graphitepdf-font]
+workspace = true
+
+[dependencies.graphitepdf-image]
+workspace = true
+
+[dependencies.graphitepdf-kit]
+workspace = true
+
+[dependencies.graphitepdf-layout]
+workspace = true
+
+[dependencies.graphitepdf-math]
+workspace = true
+
+[dependencies.graphitepdf-primitives]
+workspace = true
+
+[dependencies.graphitepdf-render]
+workspace = true
+
+[dependencies.graphitepdf-renderer]
+workspace = true
+
+[dependencies.graphitepdf-style]
+workspace = true
+
+[dependencies.graphitepdf-stylesheet]
+workspace = true
+
+[dependencies.graphitepdf-svg]
+workspace = true
+
+[dependencies.graphitepdf-textkit]
+workspace = true
+
+[dependencies.graphitepdf-utils]
+workspace = true
+
 [workspace]
 members = [
     ".",
@@ -16,62 +94,79 @@ members = [
     "crates/svg",
     "crates/textkit",
     "crates/utils",
+    "docs",
 ]
 resolver = "3"
 
 [workspace.package]
 version = "0.1.0"
-edition = "2024"
-rust-version = "1.85"
+authors = ["admirsaheta <admir@flyrank.com>"]
+homepage = "https://github.com/admirsaheta/graphitepdf"
+categories = [
+    "graphics",
+    "rendering",
+]
 license-file = "LICENSE"
 repository = "https://github.com/admirsaheta/graphitepdf"
-homepage = "https://github.com/admirsaheta/graphitepdf"
-authors = ["admirsaheta <admir@flyrank.com>"]
-categories = ["graphics", "rendering"]
+edition = "2024"
+rust-version = "1.85"
 
-[workspace.dependencies]
-graphitepdf-document = { path = "crates/document", version = "0.1.0" }
-graphitepdf-errors = { path = "crates/errors", version = "0.1.0" }
-graphitepdf-font = { path = "crates/font", version = "0.1.0" }
-graphitepdf-image = { path = "crates/image", version = "0.1.0" }
-graphitepdf-kit = { path = "crates/kit", version = "0.1.0" }
-graphitepdf-layout = { path = "crates/layout", version = "0.1.0" }
-graphitepdf-math = { path = "crates/math", version = "0.1.0" }
-graphitepdf-primitives = { path = "crates/primitives", version = "0.1.0" }
-graphitepdf-render = { path = "crates/render", version = "0.1.0" }
-graphitepdf-renderer = { path = "crates/renderer", version = "0.1.0" }
-graphitepdf-style = { path = "crates/style", version = "0.1.0" }
-graphitepdf-stylesheet = { path = "crates/stylesheet", version = "0.1.0" }
-graphitepdf-svg = { path = "crates/svg", version = "0.1.0" }
-graphitepdf-textkit = { path = "crates/textkit", version = "0.1.0" }
-graphitepdf-utils = { path = "crates/utils", version = "0.1.0" }
+[workspace.dependencies.graphitepdf-document]
+version = "0.1.0"
+path = "crates/document"
 
-[package]
-name = "graphitepdf"
-version.workspace = true
-edition.workspace = true
-rust-version.workspace = true
-license-file.workspace = true
-repository.workspace = true
-homepage.workspace = true
-categories.workspace = true
-description = "A Rust PDF rendering engine for layout, composition, and rendering pipelines."
-documentation = "https://docs.rs/graphitepdf"
-keywords = ["pdf", "renderer", "layout", "document", "graphics"]
+[workspace.dependencies.graphitepdf-errors]
+version = "0.1.0"
+path = "crates/errors"
 
-[dependencies]
-graphitepdf-document.workspace = true
-graphitepdf-errors.workspace = true
-graphitepdf-font.workspace = true
-graphitepdf-image.workspace = true
-graphitepdf-kit.workspace = true
-graphitepdf-layout.workspace = true
-graphitepdf-math.workspace = true
-graphitepdf-primitives.workspace = true
-graphitepdf-render.workspace = true
-graphitepdf-renderer.workspace = true
-graphitepdf-style.workspace = true
-graphitepdf-stylesheet.workspace = true
-graphitepdf-svg.workspace = true
-graphitepdf-textkit.workspace = true
-graphitepdf-utils.workspace = true
+[workspace.dependencies.graphitepdf-font]
+version = "0.1.0"
+path = "crates/font"
+
+[workspace.dependencies.graphitepdf-image]
+version = "0.1.0"
+path = "crates/image"
+
+[workspace.dependencies.graphitepdf-kit]
+version = "0.1.0"
+path = "crates/kit"
+
+[workspace.dependencies.graphitepdf-layout]
+version = "0.1.0"
+path = "crates/layout"
+
+[workspace.dependencies.graphitepdf-math]
+version = "0.1.0"
+path = "crates/math"
+
+[workspace.dependencies.graphitepdf-primitives]
+version = "0.1.0"
+path = "crates/primitives"
+
+[workspace.dependencies.graphitepdf-render]
+version = "0.1.0"
+path = "crates/render"
+
+[workspace.dependencies.graphitepdf-renderer]
+version = "0.1.0"
+path = "crates/renderer"
+
+[workspace.dependencies.graphitepdf-style]
+version = "0.1.0"
+path = "crates/style"
+
+[workspace.dependencies.graphitepdf-stylesheet]
+version = "0.1.0"
+path = "crates/stylesheet"
+
+[workspace.dependencies.graphitepdf-svg]
+version = "0.1.0"
+path = "crates/svg"
+
+[workspace.dependencies.graphitepdf-textkit]
+version = "0.1.0"
+path = "crates/textkit"
+
+[workspace.dependencies.graphitepdf-utils]
+version = "0.1.0"
+path = "crates/utils"

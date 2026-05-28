@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <strong>Foundational element tags and shared low-level types for the GraphitePDF ecosystem.</strong>
+  <strong>Foundational low-level geometry, units, colors, and element tags for GraphitePDF.</strong>
 </p>
 
 <p align="center">
@@ -16,11 +16,7 @@
 
 ## Overview
 
-`graphitepdf-primitives` provides the common vocabulary used by higher-level layout,
-document, and rendering layers without pulling in engine-specific behavior.
-
-It contains the low-level types that other GraphitePDF crates can share when they need
-stable geometry, measurement, color, and semantic document tags.
+`graphitepdf-primitives` provides the common low-level vocabulary used by higher-level GraphitePDF crates without pulling in layout or PDF-specific policy.
 
 ---
 
@@ -28,11 +24,9 @@ stable geometry, measurement, color, and semantic document tags.
 
 `graphitepdf-primitives` contains:
 
-- document element tag constants such as `Document`, `Page`, `View`, and `Text`
+- document element tags such as `Document`, `Page`, `View`, and `Text`
 - geometry types such as `Bounds`, `Point`, and `Size`
-- basic styling and measurement primitives such as `Color` and `Pt`
-
-The crate is intended to stay small, explicit, and reusable across other crates.
+- basic units and color types such as `Pt` and `Color`
 
 ---
 
@@ -90,9 +84,7 @@ fn main() {
 
 ## Role In GraphitePDF
 
-This crate sits near the base of the GraphitePDF stack. It exists so downstream
-crates can share geometry, units, and semantic element tags without duplicating
-definitions or inheriting unrelated runtime concerns.
+This crate sits at the base of the GraphitePDF stack and gives downstream crates a stable set of shared low-level types.
 
 ---
 
