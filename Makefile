@@ -1,4 +1,4 @@
-.PHONY: all build test bench bench-kit examples-kit example-kit-simple example-kit-complex doc clean
+.PHONY: all build test bench bench-kit examples-kit example-kit-simple example-kit-complex example-kit-svg example-kit-math doc clean
 
 all: build test
 
@@ -26,7 +26,15 @@ example-kit-complex:
 	@echo "Running graphitepdf-kit complex example..."
 	cargo run -p graphitepdf-kit --example complex
 
-examples-kit: example-kit-simple example-kit-complex
+example-kit-svg:
+	@echo "Running graphitepdf-kit SVG example..."
+	cargo run -p graphitepdf-kit --example svg
+
+example-kit-math:
+	@echo "Running graphitepdf-kit math example..."
+	cargo run -p graphitepdf-kit --example math
+
+examples-kit: example-kit-simple example-kit-complex example-kit-svg example-kit-math
 
 doc:
 	@echo "Generating documentation..."

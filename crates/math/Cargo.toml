@@ -1,0 +1,23 @@
+[package]
+name = "graphitepdf-math"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license-file.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+categories.workspace = true
+description = "Mathematical typesetting for GraphitePDF."
+documentation = "https://docs.rs/graphitepdf-math"
+keywords = ["pdf", "math", "typesetting", "graphics", "renderer"]
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+graphitepdf-errors.workspace = true
+graphitepdf-primitives.workspace = true
+graphitepdf-svg.workspace = true
+mathjax-svg-rs = "=0.4.0"
+thiserror = "1.0"

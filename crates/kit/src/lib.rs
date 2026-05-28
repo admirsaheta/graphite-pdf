@@ -51,6 +51,7 @@ mod outline;
 mod page;
 mod pattern;
 mod security;
+mod svg_render;
 #[cfg(test)]
 mod tests;
 mod text;
@@ -65,6 +66,8 @@ pub use table::{BorderStyle, TableBuilder, TableCell, TableRow};
 pub use compress::flate_encode;
 pub use document::{DocumentBuilder, Page};
 pub use graphitepdf_errors as errors;
+pub use graphitepdf_math as math;
+pub use graphitepdf_svg as svg;
 pub use error::{GraphitePdfKitError, Result};
 pub use font::{Font, FontRegistry, StandardFont};
 pub use metadata::Metadata;
@@ -73,6 +76,11 @@ pub use outline::{Outline, OutlineItem};
 pub use page::{PageMargins, PageOrientation, PageSize};
 pub use pattern::{GradientStop, LinearGradient, Pattern, RadialGradient, TilingPattern};
 pub use security::{Permissions, SecurityOptions};
+pub use self::svg_render::{
+    SvgRenderOptions, ToPdfPageContent, render_math_to_page_content,
+    render_math_to_page_content_with_options, render_svg_node_to_page_content,
+    render_svg_node_to_page_content_with_options,
+};
 pub use text::{FontWeight, TextAlignment, TextBuilder, TextRenderingMode};
 pub use vector::{Canvas, Color, LineCap, LineJoin};
 pub use writer::PdfWriter;

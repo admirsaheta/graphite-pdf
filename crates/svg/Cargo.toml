@@ -1,0 +1,22 @@
+[package]
+name = "graphitepdf-svg"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license-file.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+categories.workspace = true
+description = "SVG parsing and conversion for GraphitePDF."
+documentation = "https://docs.rs/graphitepdf-svg"
+keywords = ["pdf", "svg", "graphics", "renderer"]
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+graphitepdf-errors.workspace = true
+graphitepdf-primitives.workspace = true
+quick-xml = "0.40"
+thiserror = "1.0"

@@ -31,7 +31,9 @@ full = ["std-fonts", "vector", "tables", "images", "parallel", "security", "patt
 tracing = ["dep:tracing"]
 
 [dependencies]
-graphitepdf-errors = { path = "../errors", version = "0.1.0" }
+graphitepdf-errors.workspace = true
+graphitepdf-math.workspace = true
+graphitepdf-svg.workspace = true
 flate2 = { version = "1.0", features = ["zlib"] }
 base64 = { version = "0.22", optional = true }
 rand = "0.10"

@@ -20,6 +20,7 @@ pub const Defs: &str = "DEFS";
 pub const Image: &str = "IMAGE";
 pub const ImageBackground: &str = "IMAGE_BACKGROUND";
 pub const Tspan: &str = "TSPAN";
+pub const Use: &str = "USE";
 pub const Canvas: &str = "CANVAS";
 pub const Circle: &str = "CIRCLE";
 pub const Ellipse: &str = "ELLIPSE";
