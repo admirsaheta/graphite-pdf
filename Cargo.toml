@@ -1,11 +1,29 @@
 [workspace]
-members = [".", "crates/primitives"]
+members = [".", "crates/primitives", "crates/utils"]
 resolver = "3"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+license-file = "LICENSE"
+repository = "https://github.com/admirsaheta/graphitepdf"
+homepage = "https://github.com/admirsaheta/graphitepdf"
+authors = ["admirsaheta <admir@flyrank.com>"]
+categories = ["graphics", "rendering"]
 
 [package]
 name = "graphitepdf"
-version = "0.1.0"
-edition = "2024"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license-file.workspace = true
+repository.workspace = true
+homepage.workspace = true
+categories.workspace = true
+description = "A Rust PDF rendering engine inspired by react-pdf."
+documentation = "https://docs.rs/graphitepdf"
+keywords = ["pdf", "renderer", "layout", "document", "graphics"]
 
 [dependencies]
 graphitepdf-primitives = { path = "crates/primitives", version = "0.1.0" }

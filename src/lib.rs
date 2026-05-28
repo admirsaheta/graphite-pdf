@@ -27,7 +27,7 @@ pub struct GraphitePdf<B: RenderBackend> {
 impl<B: RenderBackend> GraphitePdf<B> {
     pub fn new(backend: B) -> Self {
         Self {
-            layout_engine: LayoutEngine::default(),
+            layout_engine: LayoutEngine,
             renderer: Renderer::new(backend),
         }
     }
@@ -69,7 +69,7 @@ mod tests {
         let page = Page::new(Size::new(595.0, 842.0)).with_child(Node::text("Hello GraphitePDF"));
         let document = Document::new().with_page(page);
 
-        let mut engine = GraphitePdf::new(NoopRenderBackend::default());
+        let mut engine = GraphitePdf::new(NoopRenderBackend);
 
         engine.render(&document).expect("pipeline should render");
     }

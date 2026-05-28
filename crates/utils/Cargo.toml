@@ -1,5 +1,5 @@
 [package]
-name = "graphitepdf-primitives"
+name = "graphitepdf-utils"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
@@ -8,9 +8,9 @@ repository.workspace = true
 homepage.workspace = true
 categories.workspace = true
 authors = ["admirsaheta <admir@flyrank.com>"]
-description = "Primitive element type constants and shared foundational types for graphitepdf."
-documentation = "https://docs.rs/graphitepdf-primitives"
-keywords = ["pdf", "primitives", "layout", "graphics", "renderer"]
+description = "Lightweight utility functions for GraphitePDF and related Rust workflows."
+documentation = "https://docs.rs/graphitepdf-utils"
+keywords = ["pdf", "utilities", "functional", "layout", "graphics"]
 readme = "README.md"
 
 [lib]
