@@ -21,7 +21,7 @@ license-file.workspace = true
 repository.workspace = true
 homepage.workspace = true
 categories.workspace = true
-description = "A Rust PDF rendering engine inspired by react-pdf."
+description = "A Rust PDF rendering engine for layout, composition, and rendering pipelines."
 documentation = "https://docs.rs/graphitepdf"
 keywords = ["pdf", "renderer", "layout", "document", "graphics"]
 
