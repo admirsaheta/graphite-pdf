@@ -1,8 +1,8 @@
 use crate::document::{ImageSource, PdfMetadata};
 use crate::error::Result;
 use crate::layout::{LayoutContent, LayoutDocument, LayoutNode, LayoutPage};
-use crate::primitives::Rect;
 use crate::style::Style;
+use graphitepdf_primitives::Bounds;
 
 pub trait RenderBackend {
     fn begin_document(&mut self, _metadata: &PdfMetadata) -> Result<()> {
@@ -13,15 +13,15 @@ pub trait RenderBackend {
         Ok(())
     }
 
-    fn fill_rect(&mut self, _frame: Rect) -> Result<()> {
+    fn fill_rect(&mut self, _frame: Bounds) -> Result<()> {
         Ok(())
     }
 
-    fn draw_text(&mut self, _frame: Rect, _style: &Style, _text: &str) -> Result<()> {
+    fn draw_text(&mut self, _frame: Bounds, _style: &Style, _text: &str) -> Result<()> {
         Ok(())
     }
 
-    fn draw_image(&mut self, _frame: Rect, _source: &ImageSource) -> Result<()> {
+    fn draw_image(&mut self, _frame: Bounds, _source: &ImageSource) -> Result<()> {
         Ok(())
     }
 

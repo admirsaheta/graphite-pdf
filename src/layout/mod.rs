@@ -1,7 +1,7 @@
 use crate::document::{Document, ImageSource, Node, NodeKind, PdfMetadata, TextNode};
 use crate::error::{GraphitePdfError, Result};
-use crate::primitives::{Rect, Size};
 use crate::style::Style;
+use graphitepdf_primitives::{Bounds, Size};
 
 #[derive(Clone, Debug, Default)]
 pub struct LayoutEngine;
@@ -99,7 +99,7 @@ impl LayoutEngine {
         };
 
         Ok(LayoutNode {
-            frame: Rect::from_origin_size(x, y, width, height),
+            frame: Bounds::from_origin_size(x, y, width, height),
             style,
             content,
         })
@@ -120,7 +120,7 @@ pub struct LayoutPage {
 
 #[derive(Clone, Debug)]
 pub struct LayoutNode {
-    pub frame: Rect,
+    pub frame: Bounds,
     pub style: Style,
     pub content: LayoutContent,
 }

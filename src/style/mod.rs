@@ -1,4 +1,4 @@
-use crate::primitives::{Color, Pt};
+use graphitepdf_primitives::{Color, Pt};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Style {

@@ -1,6 +1,11 @@
+[workspace]
+members = [".", "crates/primitives"]
+resolver = "3"
+
 [package]
 name = "graphitepdf"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+graphitepdf-primitives = { path = "crates/primitives", version = "0.1.0" }

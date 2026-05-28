@@ -1,7 +1,6 @@
 pub mod document;
 pub mod error;
 pub mod layout;
-pub mod primitives;
 pub mod render;
 pub mod style;
 
@@ -14,8 +13,9 @@ pub use document::{
     TextNode,
 };
 pub use error::{GraphitePdfError, Result};
+pub use graphitepdf_primitives as primitives;
 pub use layout::{LayoutContent, LayoutNode, LayoutPage};
-pub use primitives::{Color, Point, Pt, Rect, Size};
+pub use primitives::{Bounds, Color, Point, Pt, Size};
 pub use render::{NoopRenderBackend, RenderBackend as Backend, Renderer as RenderPipeline};
 pub use style::{AlignItems, EdgeInsets, FlexDirection, JustifyContent, Style};
 
@@ -61,8 +61,8 @@ impl<B: RenderBackend> GraphitePdf<B> {
 mod tests {
     use super::*;
     use crate::document::{Node, Page};
-    use crate::primitives::Size;
     use crate::render::NoopRenderBackend;
+    use graphitepdf_primitives::Size;
 
     #[test]
     fn smoke_test_pipeline() {

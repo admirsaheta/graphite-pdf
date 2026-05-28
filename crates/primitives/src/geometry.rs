@@ -23,12 +23,12 @@ impl Size {
 }
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
-pub struct Rect {
+pub struct Bounds {
     pub origin: Point,
     pub size: Size,
 }
 
-impl Rect {
+impl Bounds {
     pub const fn new(origin: Point, size: Size) -> Self {
         Self { origin, size }
     }

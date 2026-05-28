@@ -1,5 +1,5 @@
-use crate::primitives::Size;
 use crate::style::Style;
+use graphitepdf_primitives::Size;
 
 #[derive(Clone, Debug, Default)]
 pub struct Document {

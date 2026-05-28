@@ -5,3 +5,10 @@ version = 4
 [[package]]
 name = "graphitepdf"
 version = "0.1.0"
+dependencies = [
+ "graphitepdf-primitives",
+]
+
+[[package]]
+name = "graphitepdf-primitives"
+version = "0.1.0"

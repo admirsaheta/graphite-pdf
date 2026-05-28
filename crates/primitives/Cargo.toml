@@ -1,0 +1,12 @@
+[package]
+name = "graphitepdf-primitives"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+description = "Primitive element type constants and shared foundational types for graphitepdf."
+readme = "README.md"
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
