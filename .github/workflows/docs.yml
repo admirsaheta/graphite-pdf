@@ -55,7 +55,11 @@ jobs:
       - name: Build docs
         working-directory: docs
         run: |
-          trunk build --release --public-url /graphitepdf/
+          # Derive public-url from the actual repo name so it always matches
+          # the GitHub Pages URL regardless of hyphens/case in the repo name.
+          REPO_NAME="${GITHUB_REPOSITORY##*/}"
+          echo "Building with --public-url /$REPO_NAME/"
+          trunk build --release --public-url "/$REPO_NAME/"
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
