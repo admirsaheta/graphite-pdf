@@ -1,0 +1,55 @@
+:root {
+  --graphitepdf-color-graphite-950: #060604;
+  --graphitepdf-color-graphite-900: #1e1e1c;
+  --graphitepdf-color-graphite-850: #2e2e2c;
+  --graphitepdf-color-graphite-700: #3a3a38;
+  --graphitepdf-color-graphite-600: #606060;
+  --graphitepdf-color-graphite-500: #6e6e6c;
+  --graphitepdf-color-mist-300: #c4c4c0;
+
+  --graphitepdf-color-steel-400: #585856;
+  --graphitepdf-color-steel-500: #666664;
+  --graphitepdf-color-alloy-500: #6a6a68;
+  --graphitepdf-color-light-panel: #f3f2ee;
+  --graphitepdf-color-light-panel-alt: #e7e4dd;
+
+  --graphitepdf-color-rust-glow-400: #f58040;
+  --graphitepdf-color-rust-ember-500: #d4581a;
+  --graphitepdf-color-rust-ember-600: #c84c14;
+  --graphitepdf-color-rust-oxide-700: #7c2806;
+
+  --graphitepdf-effect-slate-glow: rgba(255, 255, 255, 0.18);
+  --graphitepdf-effect-subtle-divider-on-dark: rgba(255, 255, 255, 0.1);
+  --graphitepdf-effect-shadow-ink: rgba(0, 0, 0, 0.45);
+
+  --graphitepdf-font-wordmark: "Space Grotesk", Inter, ui-sans-serif, system-ui,
+    -apple-system, "Segoe UI", sans-serif;
+  --graphitepdf-font-ui: "Space Grotesk", Inter, ui-sans-serif, system-ui,
+    -apple-system, "Segoe UI", sans-serif;
+  --graphitepdf-font-code: "JetBrains Mono", "SFMono-Regular", Menlo, Monaco,
+    Consolas, "Liberation Mono", monospace;
+
+  --graphitepdf-gradient-graphite-surface:
+    linear-gradient(135deg, #3a3a38 0%, #6e6e6c 42%, #3a3a38 100%);
+  --graphitepdf-gradient-rust-core:
+    radial-gradient(circle at 36% 30%, #f58040 0%, #c84c14 50%, #7c2806 100%);
+
+  --graphitepdf-background-dark-base: #111110;
+  --graphitepdf-background-dark-raised: #1e1e1c;
+  --graphitepdf-background-surface: #2e2e2c;
+  --graphitepdf-background-surface-elevated: #3a3a38;
+
+  --graphitepdf-text-on-light: #1e1e1c;
+  --graphitepdf-text-on-dark: #c4c4c0;
+  --graphitepdf-text-secondary: #6e6e6c;
+  --graphitepdf-text-accent: #d4581a;
+
+  --graphitepdf-border-strong: #3a3a38;
+  --graphitepdf-border-standard: #585856;
+  --graphitepdf-border-subtle-on-dark: rgba(255, 255, 255, 0.1);
+
+  --graphitepdf-interactive-default: #d4581a;
+  --graphitepdf-interactive-hover: #f58040;
+  --graphitepdf-interactive-active: #c84c14;
+  --graphitepdf-interactive-disabled: #666664;
+}
