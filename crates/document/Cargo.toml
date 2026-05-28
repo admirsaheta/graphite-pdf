@@ -1,5 +1,5 @@
 [package]
-name = "graphitepdf-renderer"
+name = "graphitepdf-document"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
@@ -8,21 +8,18 @@ repository.workspace = true
 homepage.workspace = true
 authors.workspace = true
 categories.workspace = true
-description = "Minimal renderer backend abstraction for GraphitePDF."
-documentation = "https://docs.rs/graphitepdf-renderer"
-keywords = ["pdf", "renderer", "backend", "graphitepdf"]
+description = "Compatibility document facade types for GraphitePDF."
+documentation = "https://docs.rs/graphitepdf-document"
+keywords = ["pdf", "document", "compat", "graphitepdf"]
 
 [lib]
 path = "src/lib.rs"
 
 [dependencies]
-graphitepdf-errors.workspace = true
-graphitepdf-font.workspace = true
-graphitepdf-kit.workspace = true
+graphitepdf_style = { package = "graphitepdf-style", path = "../style", version = "0.1.0" }
+graphitepdf-image.workspace = true
 graphitepdf-layout.workspace = true
 graphitepdf-primitives.workspace = true
 graphitepdf-render.workspace = true
-thiserror = "1.0"
-
-[dev-dependencies]
+graphitepdf-renderer.workspace = true
 graphitepdf-textkit.workspace = true

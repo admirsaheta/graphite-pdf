@@ -46,6 +46,7 @@ mod backend_font;
 mod compress;
 mod document;
 mod error;
+mod image_render;
 mod metadata;
 mod objects;
 mod outline;
@@ -64,6 +65,9 @@ mod table;
 #[cfg(feature = "tables")]
 pub use table::{BorderStyle, TableBuilder, TableCell, TableRow};
 
+pub use self::image_render::{
+    ImageRenderOptions, render_image_to_page_content, render_image_to_page_content_with_options,
+};
 pub use self::svg_render::{
     SvgRenderOptions, ToPdfPageContent, render_math_to_page_content,
     render_math_to_page_content_with_options, render_svg_node_to_page_content,

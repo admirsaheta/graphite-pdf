@@ -747,6 +747,7 @@ dependencies = [
 name = "graphitepdf"
 version = "0.1.0"
 dependencies = [
+ "graphitepdf-document",
  "graphitepdf-errors",
  "graphitepdf-font",
  "graphitepdf-image",
@@ -756,10 +757,24 @@ dependencies = [
  "graphitepdf-primitives",
  "graphitepdf-render",
  "graphitepdf-renderer",
+ "graphitepdf-style",
  "graphitepdf-stylesheet",
  "graphitepdf-svg",
  "graphitepdf-textkit",
  "graphitepdf-utils",
+]
+
+[[package]]
+name = "graphitepdf-document"
+version = "0.1.0"
+dependencies = [
+ "graphitepdf-image",
+ "graphitepdf-layout",
+ "graphitepdf-primitives",
+ "graphitepdf-render",
+ "graphitepdf-renderer",
+ "graphitepdf-style",
+ "graphitepdf-textkit",
 ]
 
 [[package]]
@@ -823,7 +838,11 @@ version = "0.1.0"
 dependencies = [
  "graphitepdf-errors",
  "graphitepdf-font",
+ "graphitepdf-image",
+ "graphitepdf-math",
  "graphitepdf-primitives",
+ "graphitepdf-stylesheet",
+ "graphitepdf-svg",
  "graphitepdf-textkit",
  "thiserror 1.0.69",
 ]
@@ -847,10 +866,19 @@ version = "0.1.0"
 name = "graphitepdf-render"
 version = "0.1.0"
 dependencies = [
+ "flate2",
  "graphitepdf-errors",
+ "graphitepdf-font",
+ "graphitepdf-image",
+ "graphitepdf-kit",
  "graphitepdf-layout",
  "graphitepdf-primitives",
+ "graphitepdf-svg",
+ "graphitepdf-textkit",
+ "graphitepdf-utils",
+ "png",
  "thiserror 1.0.69",
+ "tokio",
 ]
 
 [[package]]
@@ -858,8 +886,23 @@ name = "graphitepdf-renderer"
 version = "0.1.0"
 dependencies = [
  "graphitepdf-errors",
+ "graphitepdf-font",
+ "graphitepdf-kit",
+ "graphitepdf-layout",
+ "graphitepdf-primitives",
  "graphitepdf-render",
+ "graphitepdf-textkit",
  "thiserror 1.0.69",
+]
+
+[[package]]
+name = "graphitepdf-style"
+version = "0.1.0"
+dependencies = [
+ "graphitepdf-font",
+ "graphitepdf-layout",
+ "graphitepdf-primitives",
+ "graphitepdf-stylesheet",
 ]
 
 [[package]]
@@ -1460,6 +1503,16 @@ name = "parking"
 version = "2.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f38d5652c16fde515bb1ecef450ab0f6a219d619a7274976324d5e377f7dceba"
+
+[[package]]
+name = "parking_lot"
+version = "0.12.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "93857453250e3077bd71ff98b6a65ea6621a19bb0f559a85248955ac12c45a1a"
+dependencies = [
+ "lock_api",
+ "parking_lot_core",
+]
 
 [[package]]
 name = "parking_lot_core"
@@ -2135,6 +2188,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0fda2ff0d084019ba4d7c6f371c95d8fd75ce3524c3cb8fb653a3023f6323e64"
 
 [[package]]
+name = "signal-hook-registry"
+version = "1.4.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c4db69cba1110affc0e9f7bcd48bbf87b3f4fc7c61fc9155afd4c469eb3d6c1b"
+dependencies = [
+ "errno",
+ "libc",
+]
+
+[[package]]
 name = "simd-adler32"
 version = "0.3.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2375,7 +2438,9 @@ dependencies = [
  "bytes",
  "libc",
  "mio",
+ "parking_lot",
  "pin-project-lite",
+ "signal-hook-registry",
  "socket2",
  "tokio-macros",
  "windows-sys 0.61.2",

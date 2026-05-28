@@ -18,6 +18,10 @@ path = "src/lib.rs"
 [dependencies]
 graphitepdf-errors.workspace = true
 graphitepdf-font.workspace = true
+graphitepdf-image.workspace = true
+graphitepdf-math.workspace = true
 graphitepdf-primitives.workspace = true
+graphitepdf-stylesheet.workspace = true
+graphitepdf-svg.workspace = true
 graphitepdf-textkit.workspace = true
 thiserror = "1.0"

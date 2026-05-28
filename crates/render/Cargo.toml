@@ -17,6 +17,17 @@ path = "src/lib.rs"
 
 [dependencies]
 graphitepdf-errors.workspace = true
+graphitepdf-font.workspace = true
+graphitepdf-image.workspace = true
+graphitepdf-kit.workspace = true
 graphitepdf-layout.workspace = true
 graphitepdf-primitives.workspace = true
+graphitepdf-svg.workspace = true
+graphitepdf-textkit.workspace = true
+graphitepdf-utils.workspace = true
 thiserror = "1.0"
+tokio = { version = "1.47", features = ["full"] }
+
+[dev-dependencies]
+flate2 = { version = "1.0", features = ["zlib"] }
+png = "0.18"

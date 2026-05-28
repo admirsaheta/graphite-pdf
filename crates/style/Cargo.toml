@@ -1,0 +1,22 @@
+[package]
+name = "graphitepdf-style"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license-file.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+categories.workspace = true
+description = "Compatibility style facade types for GraphitePDF."
+documentation = "https://docs.rs/graphitepdf-style"
+keywords = ["pdf", "style", "compat", "graphitepdf"]
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+graphitepdf-font.workspace = true
+graphitepdf-layout.workspace = true
+graphitepdf-primitives.workspace = true
+graphitepdf-stylesheet.workspace = true
