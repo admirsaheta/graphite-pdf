@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+RED='\033[0;31m'
+GRN='\033[0;32m'
+YLW='\033[0;33m'
+DIM='\033[2m'
+RST='\033[0m'
+
+echo ""
+echo "${DIM}graphitepdf pre-push gate${RST}"
+echo "${DIM}──────────────────────────${RST}"
+
+# ── 1. Format check ────────────────────────────────────────────────────────────
+printf "  fmt   "
+if cargo fmt --all -- --check 2>/dev/null; then
+    echo "${GRN}✓${RST}"
+else
+    echo "${RED}✗${RST}"
+    echo ""
+    echo "${RED}  Format check failed.${RST} Run ${YLW}cargo fmt --all${RST} then re-push."
+    exit 1
+fi
+
+# ── 2. Workspace check (all targets) ──────────────────────────────────────────
+printf "  check "
+if cargo check --workspace --all-targets --quiet 2>/dev/null; then
+    echo "${GRN}✓${RST}"
+else
+    echo "${RED}✗${RST}"
+    echo ""
+    echo "${RED}  cargo check failed.${RST} Fix compile errors before pushing."
+    exit 1
+fi
+
+# ── 3. Clippy (deny warnings) ─────────────────────────────────────────────────
+printf "  clippy"
+if cargo clippy --workspace --all-targets --quiet -- -D warnings 2>/dev/null; then
+    echo "${GRN}✓${RST}"
+else
+    echo "${RED}✗${RST}"
+    echo ""
+    echo "${RED}  Clippy warnings found.${RST} Fix them or suppress with ${YLW}#[allow(...)]${RST}."
+    exit 1
+fi
+
+# ── 4. WASM docs build ────────────────────────────────────────────────────────
+printf "  wasm  "
+if cargo build -p docs --target wasm32-unknown-unknown --quiet 2>/dev/null; then
+    echo "${GRN}✓${RST}"
+else
+    echo "${RED}✗${RST}"
+    echo ""
+    echo "${RED}  WASM docs build failed.${RST} Fix docs/ compile errors before pushing."
+    exit 1
+fi
+
+echo ""
+echo "${GRN}  All checks passed — pushing.${RST}"
+echo ""

@@ -1,0 +1,86 @@
+# cargo-release workspace configuration
+# https://github.com/crate-ci/cargo-release/blob/master/docs/reference.md
+
+sign-commit = false
+sign-tag    = false
+push        = true
+publish     = true
+tag         = true
+
+# All workspace crates share one version (version.workspace = true)
+shared-version = true
+
+# Commit message for the version bump commit — [skip ci] prevents re-triggering the release workflow
+pre-release-commit-message = "chore(release): v{{version}} [skip ci]"
+
+# Tag format
+tag-name = "v{{version}}"
+tag-message = "GraphitePDF v{{version}}"
+
+# Push the bump commit + tag together
+push-remote = "origin"
+
+# Run these before publishing each crate
+[[pre-release-hook]]
+# Regenerate CHANGELOG with the new version tag
+command = "git-cliff"
+args    = ["--tag", "v{{version}}", "--output", "CHANGELOG.md"]
+
+[[pre-release-hook]]
+command = "git"
+args    = ["add", "CHANGELOG.md"]
+
+# Workspace-level publish order — cargo-release also auto-detects via dep graph,
+# but explicit order guarantees correctness for simultaneous crates.io indexing.
+[packages.graphitepdf-errors]
+publish-order = 1
+
+[packages.graphitepdf-primitives]
+publish-order = 2
+
+[packages.graphitepdf-utils]
+publish-order = 3
+
+[packages.graphitepdf-svg]
+publish-order = 4
+
+[packages.graphitepdf-stylesheet]
+publish-order = 5
+
+[packages.graphitepdf-font]
+publish-order = 6
+
+[packages.graphitepdf-math]
+publish-order = 7
+
+[packages.graphitepdf-textkit]
+publish-order = 8
+
+[packages.graphitepdf-image]
+publish-order = 9
+
+[packages.graphitepdf-kit]
+publish-order = 10
+
+[packages.graphitepdf-layout]
+publish-order = 11
+
+[packages.graphitepdf-render]
+publish-order = 12
+
+[packages.graphitepdf-renderer]
+publish-order = 13
+
+[packages.graphitepdf-style]
+publish-order = 14
+
+[packages.graphitepdf-document]
+publish-order = 15
+
+[packages.graphitepdf]
+publish-order = 16
+
+# The docs Yew app is not a library — never publish it
+[packages.docs]
+publish = false
+tag     = false

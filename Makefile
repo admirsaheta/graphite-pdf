@@ -1,4 +1,4 @@
-.PHONY: all build test bench bench-kit examples-kit example-kit-simple example-kit-complex example-kit-svg example-kit-math example-kit-native example-renderer-pipeline doc clean
+.PHONY: all build test bench bench-kit examples-kit example-kit-simple example-kit-complex example-kit-svg example-kit-math example-kit-native example-renderer-pipeline doc clean hooks fmt clippy docs-serve changelog changelog-preview release-dry release-patch release-minor release-major
 
 all: build test
 
@@ -51,3 +51,42 @@ doc:
 clean:
 	@echo "Cleaning build artifacts..."
 	cargo clean
+
+# ── Dev tooling setup ─────────────────────────────────────────────────────────
+
+hooks:
+	git config core.hooksPath .githooks
+	chmod +x .githooks/pre-push
+	@echo "✓ Pre-push hook installed (fmt → check → clippy → wasm-build)."
+
+fmt:
+	cargo fmt --all
+
+clippy:
+	cargo clippy --workspace --all-targets -- -D warnings
+
+docs-serve:
+	cd docs && trunk serve
+
+# ── CHANGELOG ─────────────────────────────────────────────────────────────────
+
+changelog:
+	git cliff --output CHANGELOG.md
+	@echo "✓ CHANGELOG.md regenerated."
+
+changelog-preview:
+	git cliff --unreleased --strip header
+
+# ── Release ───────────────────────────────────────────────────────────────────
+
+release-dry:
+	cargo release minor --workspace --no-publish --no-push --no-tag
+
+release-patch:
+	cargo release patch --workspace --execute
+
+release-minor:
+	cargo release minor --workspace --execute
+
+release-major:
+	cargo release major --workspace --execute
