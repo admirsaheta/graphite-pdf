@@ -5,7 +5,7 @@ name: Release
 # The release commit itself includes [skip ci] so it doesn't re-trigger this.
 on:
   push:
-    branches: [main]
+    branches: [master]
     paths-ignore:
       - "docs/**"
       - "**.md"
