@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 260" width="760" height="260" fill="none">
+  <defs>
+    <linearGradient id="b1" x1="18" y1="16" x2="182" y2="184" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#3a3a38"></stop>
+      <stop offset="42%" stop-color="#6e6e6c"></stop>
+      <stop offset="100%" stop-color="#3a3a38"></stop>
+    </linearGradient>
+    <linearGradient id="b2" x1="52" y1="184" x2="148" y2="16" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#343432"></stop>
+      <stop offset="48%" stop-color="#666664"></stop>
+      <stop offset="100%" stop-color="#343432"></stop>
+    </linearGradient>
+    <linearGradient id="b3" x1="10" y1="100" x2="190" y2="100" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2e2e2c"></stop>
+      <stop offset="50%" stop-color="#606060"></stop>
+      <stop offset="100%" stop-color="#2e2e2c"></stop>
+    </linearGradient>
+    <linearGradient id="hx" x1="74" y1="62" x2="126" y2="138" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6a6a68"></stop>
+      <stop offset="42%" stop-color="#3c3c3a"></stop>
+      <stop offset="100%" stop-color="#1e1e1c"></stop>
+    </linearGradient>
+    <radialGradient id="dt" cx="36%" cy="30%" r="68%">
+      <stop offset="0%" stop-color="#f58040"></stop>
+      <stop offset="50%" stop-color="#c84c14"></stop>
+      <stop offset="100%" stop-color="#7c2806"></stop>
+    </radialGradient>
+    <filter id="sh" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="3.5" flood-color="#000000" flood-opacity="0.72"></feDropShadow>
+    </filter>
+  </defs>
+
+  
+  <g transform="translate(130,130)">
+    <path transform="rotate(240)" d="M -61 19 C -90 -15 -50 -90 61 -19 C 55 5 -50 50 -61 19 Z" fill="url(#b3)" stroke="#060604" stroke-width="0.7" filter="url(#sh)"></path>
+    <path transform="rotate(120)" d="M -61 19 C -90 -15 -50 -90 61 -19 C 55 5 -50 50 -61 19 Z" fill="url(#b2)" stroke="#060604" stroke-width="0.7" filter="url(#sh)"></path>
+    <path transform="rotate(0)" d="M -61 19 C -90 -15 -50 -90 61 -19 C 55 5 -50 50 -61 19 Z" fill="url(#b1)" stroke="#060604" stroke-width="0.7" filter="url(#sh)"></path>
+    <path transform="rotate(0)" d="M -61 19 C -90 -15 -50 -90 61 -19" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1"></path>
+    <path transform="rotate(120)" d="M -61 19 C -90 -15 -50 -90 61 -19" fill="none" stroke="rgba(255,255,255,0.13)" stroke-width="1"></path>
+    <path transform="rotate(240)" d="M -61 19 C -90 -15 -50 -90 61 -19" fill="none" stroke="rgba(255,255,255,0.09)" stroke-width="1"></path>
+    <polygon points="26,0 13,-22.5 -13,-22.5 -26,0 -13,22.5 13,22.5" fill="url(#hx)" stroke="#060604" stroke-width="1"></polygon>
+    <polyline points="26,0 13,-22.5 -13,-22.5 -26,0" fill="none" stroke="rgba(255,255,255,0.20)" stroke-width="0.85"></polyline>
+    <polyline points="-26,0 -13,22.5 13,22.5 26,0" fill="none" stroke="rgba(0,0,0,0.45)" stroke-width="0.85"></polyline>
+    <polygon points="17.5,0 8.75,-15.15 -8.75,-15.15 -17.5,0 -8.75,15.15 8.75,15.15" fill="none" stroke="#585856" stroke-width="0.8"></polygon>
+    <circle cx="0" cy="0" r="11.5" fill="url(#dt)"></circle>
+    <ellipse cx="-3" cy="-3.5" rx="4.2" ry="2.6" fill="rgba(255,255,255,0.26)"></ellipse>
+    <ellipse cx="2.5" cy="4" rx="3.8" ry="2.2" fill="rgba(0,0,0,0.20)"></ellipse>
+  </g>
+
+  
+  <text x="276" y="148" font-family="Space Grotesk, -apple-system, Segoe UI, Helvetica, Arial, sans-serif" font-size="60" letter-spacing="-2">
+    <tspan font-weight="300" fill="#c4c4c0">graphite</tspan><tspan font-weight="700" fill="#D4581A">pdf</tspan>
+  </text>
+
+  
+  <text x="278" y="180" font-family="Space Grotesk, -apple-system, Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" letter-spacing="3.5" fill="#2e2e2c">PDF GENERATION FOR RUST</text>
+</svg>

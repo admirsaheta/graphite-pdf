@@ -1,61 +1,72 @@
 const config = {
     content: ["./src/**/*.rs", "./index.html"],
-    darkMode: "media",
+    mode: "jit",
+    darkMode: "class",
     theme: {
         extend: {
+            colors: {
+                graphite: {
+                    950: "#060604",
+                    900: "#1E1E1C",
+                    850: "#2E2E2C",
+                    700: "#3A3A38",
+                    600: "#606060",
+                    500: "#6E6E6C",
+                },
+                mist: {
+                    300: "#C4C4C0",
+                },
+                rust: {
+                    400: "#F58040",
+                    500: "#D4581A",
+                    600: "#C84C14",
+                    700: "#7C2806",
+                },
+                steel: {
+                    400: "#585856",
+                    500: "#666664",
+                },
+                base: {
+                    bg: "#111110",
+                    raised: "#1E1E1C",
+                    surface: "#2E2E2C",
+                    elevated: "#3A3A38",
+                },
+            },
             fontFamily: {
-                'admir-regular': ['AdmirRegular', 'ui-sans-serif', 'system-ui'],
-                'admir-bold': ['AdmirBold', 'ui-sans-serif', 'system-ui'],
+                sans: ["Space Grotesk", "Inter", "ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "sans-serif"],
+                mono: ["JetBrains Mono", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", "monospace"],
             },
             keyframes: {
                 fadeOpacity: {
-                    '0%, 100%': { opacity: '1' },
-                    '50%': { opacity: '0.6' },
+                    "0%, 100%": { opacity: "1" },
+                    "50%": { opacity: "0.6" },
                 },
-                'preloader-logo': {
-                    '0%': { opacity: '0', transform: 'scale(0.96)' },
-                    '100%': { opacity: '1', transform: 'scale(1)' },
+                "rust-pulse": {
+                    "0%, 100%": { boxShadow: "0 0 0 0 rgba(213,88,26,0)" },
+                    "50%": { boxShadow: "0 0 20px 4px rgba(213,88,26,0.3)" },
                 },
-                'preloader-bar': {
-                    '0%': { transform: 'translateX(-60%)' },
-                    '100%': { transform: 'translateX(260%)' },
+                "slide-in-left": {
+                    "0%": { opacity: "0", transform: "translateX(-12px)" },
+                    "100%": { opacity: "1", transform: "translateX(0)" },
                 },
-                'preloader-fill': {
-                    '0%': { transform: 'scaleX(0)' },
-                    '100%': { transform: 'scaleX(1)' },
+                "fade-up": {
+                    "0%": { opacity: "0", transform: "translateY(16px)" },
+                    "100%": { opacity: "1", transform: "translateY(0)" },
                 },
-                fall: {
-                    '0%': { transform: 'translateY(-10%) rotate(0deg)', opacity: '0' },
-                    '10%': { opacity: '0.8' },
-                    '100%': { transform: 'translateY(100vh) rotate(360deg)', opacity: '0' },
-                },
-                'scroll-left': {
-                    '0%': { transform: 'translateX(0)' },
-                    '100%': { transform: 'translateX(-50%)' },
-                },
-                'scroll-right': {
-                    '0%': { transform: 'translateX(-50%)' },
-                    '100%': { transform: 'translateX(0)' },
-                },
-                'spin-rotate': {
-                    '0%': { transform: 'rotate(0deg)' },
-                    '100%': { transform: 'rotate(360deg)' },
+                "spin-slow": {
+                    "0%": { transform: "rotate(0deg)" },
+                    "100%": { transform: "rotate(360deg)" },
                 },
             },
             animation: {
-                fadeOpacity: 'fadeOpacity 8s infinite ease-in-out',
-                'preloader-logo': 'preloader-logo 900ms cubic-bezier(0.22, 1, 0.36, 1) forwards',
-                'preloader-bar': 'preloader-bar 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite',
-                'preloader-fill': 'preloader-fill 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards',
-                fall: 'fall 3s linear infinite',
-                'spin-slow': 'spin-rotate 12s linear infinite',
-                'scroll-left': 'scroll-left 40s linear infinite',
-                'scroll-right': 'scroll-right 40s linear infinite',
+                fadeOpacity: "fadeOpacity 8s infinite ease-in-out",
+                "rust-pulse": "rust-pulse 3s ease-in-out infinite",
+                "slide-in-left": "slide-in-left 0.3s cubic-bezier(0.16,1,0.3,1) forwards",
+                "fade-up": "fade-up 0.5s cubic-bezier(0.16,1,0.3,1) forwards",
+                "spin-slow": "spin-slow 12s linear infinite",
             },
         },
-    },
-    variants: {
-        extend: {},
     },
     plugins: [],
 };

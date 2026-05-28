@@ -1,31 +1,259 @@
-html,
-body {
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&display=swap");
+
+:root {
+  --g-bg:          #111110;
+  --g-raised:      #1E1E1C;
+  --g-surface:     #2E2E2C;
+  --g-elevated:    #3A3A38;
+  --g-border:      rgba(255, 255, 255, 0.08);
+  --g-border-strong: #3A3A38;
+  --g-text:        #C4C4C0;
+  --g-text-dim:    #6E6E6C;
+  --g-text-dimmer: #585856;
+  --g-accent:      #D4581A;
+  --g-accent-glow: #F58040;
+  --g-accent-deep: #7C2806;
+  --g-font-sans:   "Space Grotesk", Inter, ui-sans-serif, system-ui, sans-serif;
+  --g-font-mono:   "JetBrains Mono", "SFMono-Regular", Menlo, Monaco, monospace;
+}
+
+html, body {
   min-height: 100%;
   margin: 0;
+  background-color: var(--g-bg);
+  color: var(--g-text);
+  font-family: var(--g-font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-  background:
-    radial-gradient(circle at top, rgba(14, 165, 233, 0.18), transparent 38%),
-    linear-gradient(135deg, #020617 0%, #111827 55%, #0f172a 100%);
-  color: #e2e8f0;
-  font-family:
-    Inter,
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-}
-
-main {
+*, *::before, *::after {
   box-sizing: border-box;
-  width: 100%;
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: inherit;
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--g-raised);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--g-elevated);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--g-text-dimmer);
+}
+
+/* Selection */
+::selection {
+  background: rgba(213, 88, 26, 0.25);
+  color: #F58040;
+}
+
+/* ── Doc markdown content ─────────────────────────────────────────────────── */
+
+.doc-content {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--g-text);
+  max-width: 72ch;
+
+  > * + * {
+    margin-top: 1.25em;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #fff;
+    margin: 0 0 0.5em;
+    padding-bottom: 0.6em;
+    border-bottom: 1px solid var(--g-border-strong);
+    line-height: 1.2;
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: #E8E8E4;
+    margin: 2.5em 0 0.6em;
+    padding-bottom: 0.4em;
+    border-bottom: 1px solid var(--g-border);
+    letter-spacing: -0.01em;
+    scroll-margin-top: 80px;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #D0D0CC;
+    margin: 2em 0 0.5em;
+    scroll-margin-top: 80px;
+  }
+
+  h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--g-text);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 1.75em 0 0.4em;
+  }
+
+  p {
+    margin: 0 0 1em;
+    color: #ADADAA;
+    line-height: 1.8;
+  }
+
+  a {
+    color: var(--g-accent-glow);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+
+    &:hover {
+      color: var(--g-accent);
+      border-color: var(--g-accent);
+    }
+  }
+
+  strong {
+    color: #E0E0DC;
+    font-weight: 600;
+  }
+
+  em {
+    color: #B8B8B4;
+  }
+
+  /* Inline code */
+  code {
+    font-family: var(--g-font-mono);
+    font-size: 0.82em;
+    background: var(--g-surface);
+    color: #F58040;
+    padding: 0.15em 0.45em;
+    border-radius: 4px;
+    border: 1px solid var(--g-border);
+  }
+
+  /* Code blocks */
+  pre {
+    background: var(--g-raised) !important;
+    border: 1px solid var(--g-border-strong);
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.5em 0;
+    position: relative;
+
+    code {
+      font-family: var(--g-font-mono);
+      font-size: 0.83em;
+      background: transparent !important;
+      color: inherit;
+      padding: 0;
+      border: none;
+      line-height: 1.65;
+    }
+  }
+
+  /* hljs override to match brand */
+  .hljs {
+    background: var(--g-raised) !important;
+    padding: 1.25rem 1.5rem !important;
+  }
+
+  blockquote {
+    border-left: 3px solid var(--g-accent);
+    margin: 1.5em 0;
+    padding: 0.75em 1.25em;
+    background: rgba(213, 88, 26, 0.06);
+    border-radius: 0 6px 6px 0;
+    color: #9A9A96;
+    font-style: italic;
+
+    p { margin: 0; color: inherit; }
+  }
+
+  ul, ol {
+    padding-left: 1.5em;
+    margin: 0.75em 0;
+
+    li {
+      margin: 0.3em 0;
+      color: #ADADAA;
+    }
+
+    li::marker {
+      color: var(--g-accent);
+    }
+  }
+
+  ul { list-style-type: disc; }
+  ol { list-style-type: decimal; }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88em;
+    margin: 1.5em 0;
+    border: 1px solid var(--g-border-strong);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  th {
+    background: var(--g-surface);
+    color: #E0E0DC;
+    font-weight: 600;
+    text-align: left;
+    padding: 0.6em 1em;
+    border-bottom: 1px solid var(--g-border-strong);
+    font-size: 0.8em;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  td {
+    padding: 0.55em 1em;
+    border-bottom: 1px solid var(--g-border);
+    color: #ADADAA;
+
+    code { font-size: 0.78em; }
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+  /* Horizontal rule */
+  hr {
+    border: none;
+    border-top: 1px solid var(--g-border-strong);
+    margin: 2.5em 0;
+  }
+
+  /* Task lists */
+  input[type="checkbox"] {
+    accent-color: var(--g-accent);
+    margin-right: 0.4em;
+  }
+}
+
+/* ── Sidebar active link indicator ────────────────────────────────────────── */
+
+.sidebar-link-active {
+  color: var(--g-accent-glow) !important;
+  background: rgba(213, 88, 26, 0.1) !important;
+}
+
+/* ── Smooth scroll ────────────────────────────────────────────────────────── */
+
+html {
+  scroll-behavior: smooth;
 }
