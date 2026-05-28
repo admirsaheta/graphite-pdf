@@ -34,12 +34,14 @@ jobs:
         with:
           key: docs-build
 
-      # Install wasm-bindgen-cli matching the version compiled into the WASM
+      # Install wasm-bindgen-cli matching the exact version in Cargo.lock
+      # (Cargo.lock has all transitive deps; --no-deps metadata misses them)
       - name: Install wasm-bindgen-cli
         run: |
-          VERSION=$(cargo metadata --format-version 1 --no-deps \
-            | jq -r '.packages[] | select(.name=="wasm-bindgen") | .version' \
-            | head -1)
+          VERSION=$(grep -A1 'name = "wasm-bindgen"' Cargo.lock \
+            | grep 'version' | head -1 \
+            | sed 's/.*version = "\(.*\)".*/\1/')
+          echo "Installing wasm-bindgen-cli $VERSION"
           cargo install wasm-bindgen-cli --version "$VERSION" --locked
 
       # Install trunk via prebuilt binary for speed

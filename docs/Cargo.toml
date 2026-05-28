@@ -9,6 +9,10 @@ license = "MIT OR Apache-2.0"
 keywords = ["yew", "trunk", "docs", "graphitepdf"]
 categories = ["gui", "wasm", "web-programming"]
 
+[package.metadata.release]
+publish = false
+tag     = false
+
 [dependencies]
 yew = { version = "0.23", features = ["csr"] }
 yew-router = "0.20"
