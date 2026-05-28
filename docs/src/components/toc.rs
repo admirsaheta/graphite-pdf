@@ -60,10 +60,10 @@ pub fn extract_toc(markdown: &str) -> Vec<TocEntry> {
             continue;
         }
 
-        let (level, text) = if trimmed.starts_with("### ") {
-            (3u8, &trimmed[4..])
-        } else if trimmed.starts_with("## ") {
-            (2u8, &trimmed[3..])
+        let (level, text) = if let Some(t) = trimmed.strip_prefix("### ") {
+            (3u8, t)
+        } else if let Some(t) = trimmed.strip_prefix("## ") {
+            (2u8, t)
         } else {
             continue;
         };

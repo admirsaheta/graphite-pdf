@@ -75,20 +75,15 @@ impl LocalImageSource {
     }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Default)]
 pub enum RemoteMethod {
+    #[default]
     Get,
     Head,
     Post,
     Put,
     Delete,
     Patch,
-}
-
-impl Default for RemoteMethod {
-    fn default() -> Self {
-        Self::Get
-    }
 }
 
 impl RemoteMethod {
@@ -348,6 +343,10 @@ impl ImageCache {
     pub fn len(&self) -> usize {
         let state = self.state.lock().expect("image cache mutex poisoned");
         state.entries.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
     }
 }
 
@@ -830,6 +829,7 @@ fn parse_svg_dimension(value: &str) -> Option<f32> {
 }
 
 #[cfg(test)]
+#[allow(clippy::await_holding_lock)]
 mod tests {
     use super::*;
 

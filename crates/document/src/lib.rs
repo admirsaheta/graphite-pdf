@@ -83,7 +83,7 @@ impl graphitepdf_renderer::RendererDocumentSource for Document {
         render_engine: &graphitepdf_render::RenderEngine,
     ) -> graphitepdf_renderer::Result<graphitepdf_render::RenderDocument> {
         let layout = layout_engine.layout_document(&LayoutDocument::from(self))?;
-        Ok(render_engine.build(&layout)?)
+        render_engine.build(&layout)
     }
 }
 

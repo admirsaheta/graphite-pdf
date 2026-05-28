@@ -48,12 +48,12 @@ fn add_heading_ids(container: &Element) {
     let selector = "h1, h2, h3, h4";
     if let Ok(list) = container.query_selector_all(selector) {
         for i in 0..list.length() {
-            if let Some(node) = list.item(i) {
-                if let Ok(el) = node.dyn_into::<Element>() {
-                    let text = el.text_content().unwrap_or_default();
-                    let id = slugify(&text);
-                    let _ = el.set_attribute("id", &id);
-                }
+            if let Some(node) = list.item(i)
+                && let Ok(el) = node.dyn_into::<Element>()
+            {
+                let text = el.text_content().unwrap_or_default();
+                let id = slugify(&text);
+                let _ = el.set_attribute("id", &id);
             }
         }
     }

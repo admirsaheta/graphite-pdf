@@ -802,11 +802,11 @@ fn apply_paint_state(content: &mut String, state: &RenderState) {
     }
 }
 
-fn apply_paint_operator(content: &mut String, state: &RenderState, closed: bool) {
+fn apply_paint_operator(content: &mut String, state: &RenderState, _closed: bool) {
     match (state.fill.is_some(), state.stroke.is_some()) {
-        (true, true) => content.push_str(if closed { "B\n" } else { "B\n" }),
-        (true, false) => content.push_str(if closed { "f\n" } else { "f\n" }),
-        (false, true) => content.push_str(if closed { "S\n" } else { "S\n" }),
+        (true, true) => content.push_str("B\n"),
+        (true, false) => content.push_str("f\n"),
+        (false, true) => content.push_str("S\n"),
         (false, false) => content.push_str("n\n"),
     }
 }
@@ -1340,7 +1340,7 @@ fn render_path_data(data: &str, content: &mut String) -> Result<()> {
     Ok(())
 }
 
-fn extract_use_href<'a>(node: &'a SvgNode) -> Option<&'a str> {
+fn extract_use_href(node: &SvgNode) -> Option<&str> {
     node.props
         .get("href")
         .or_else(|| node.props.get("xlinkHref"))

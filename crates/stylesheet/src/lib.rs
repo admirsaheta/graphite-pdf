@@ -150,7 +150,7 @@ impl Container {
     }
 
     fn resolved_orientation(self) -> Orientation {
-        self.orientation.unwrap_or_else(|| {
+        self.orientation.unwrap_or({
             if self.width > self.height {
                 Orientation::Landscape
             } else {

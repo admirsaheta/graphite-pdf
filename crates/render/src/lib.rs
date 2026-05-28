@@ -1385,7 +1385,7 @@ impl RendererDocumentSource for SourceLayoutDocument {
         render_engine: &RenderEngine,
     ) -> Result<RenderDocument> {
         let layout = layout_engine.layout_document(self)?;
-        Ok(render_engine.build(&layout)?)
+        render_engine.build(&layout)
     }
 }
 
@@ -1395,7 +1395,7 @@ impl RendererDocumentSource for SafeLayoutDocument {
         _layout_engine: &LayoutEngine,
         render_engine: &RenderEngine,
     ) -> Result<RenderDocument> {
-        Ok(render_engine.build(self)?)
+        render_engine.build(self)
     }
 }
 
@@ -1405,7 +1405,7 @@ impl RendererDocumentSource for LegacyLayoutDocument {
         _layout_engine: &LayoutEngine,
         render_engine: &RenderEngine,
     ) -> Result<RenderDocument> {
-        Ok(render_engine.build(self)?)
+        render_engine.build(self)
     }
 }
 

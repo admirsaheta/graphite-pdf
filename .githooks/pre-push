@@ -1,60 +1,80 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# ── Colours ───────────────────────────────────────────────────────────────────
+BLD='\033[1m'
+DIM='\033[2m'
 RED='\033[0;31m'
 GRN='\033[0;32m'
 YLW='\033[0;33m'
-DIM='\033[2m'
+CYN='\033[0;36m'
 RST='\033[0m'
 
+PASS="${GRN}✓${RST}"
+FAIL="${RED}✗${RST}"
+
+# ── Header ────────────────────────────────────────────────────────────────────
 echo ""
-echo "${DIM}graphitepdf pre-push gate${RST}"
-echo "${DIM}──────────────────────────${RST}"
-
-# ── 1. Format check ────────────────────────────────────────────────────────────
-printf "  fmt   "
-if cargo fmt --all -- --check 2>/dev/null; then
-    echo "${GRN}✓${RST}"
-else
-    echo "${RED}✗${RST}"
-    echo ""
-    echo "${RED}  Format check failed.${RST} Run ${YLW}cargo fmt --all${RST} then re-push."
-    exit 1
-fi
-
-# ── 2. Workspace check (all targets) ──────────────────────────────────────────
-printf "  check "
-if cargo check --workspace --all-targets --quiet 2>/dev/null; then
-    echo "${GRN}✓${RST}"
-else
-    echo "${RED}✗${RST}"
-    echo ""
-    echo "${RED}  cargo check failed.${RST} Fix compile errors before pushing."
-    exit 1
-fi
-
-# ── 3. Clippy (deny warnings) ─────────────────────────────────────────────────
-printf "  clippy"
-if cargo clippy --workspace --all-targets --quiet -- -D warnings 2>/dev/null; then
-    echo "${GRN}✓${RST}"
-else
-    echo "${RED}✗${RST}"
-    echo ""
-    echo "${RED}  Clippy warnings found.${RST} Fix them or suppress with ${YLW}#[allow(...)]${RST}."
-    exit 1
-fi
-
-# ── 4. WASM docs build ────────────────────────────────────────────────────────
-printf "  wasm  "
-if cargo build -p docs --target wasm32-unknown-unknown --quiet 2>/dev/null; then
-    echo "${GRN}✓${RST}"
-else
-    echo "${RED}✗${RST}"
-    echo ""
-    echo "${RED}  WASM docs build failed.${RST} Fix docs/ compile errors before pushing."
-    exit 1
-fi
-
+echo "  ${BLD}graphitepdf${RST}  ${DIM}pre-push${RST}"
+echo "  ${DIM}────────────────────────────────${RST}"
 echo ""
-echo "${GRN}  All checks passed — pushing.${RST}"
-echo ""
+
+fail=0
+
+# ── Step runner ───────────────────────────────────────────────────────────────
+# Usage: run_step "label" command [args...]
+# Prints label, runs command, shows ✓ or ✗ with output on failure.
+run_step() {
+    local label="$1"
+    shift
+    local cmd=("$@")
+
+    printf "  %-8s " "$label"
+
+    local tmpout
+    tmpout=$(mktemp)
+
+    if "${cmd[@]}" >"$tmpout" 2>&1; then
+        echo -e "$PASS"
+        rm -f "$tmpout"
+    else
+        echo -e "$FAIL"
+        fail=1
+        echo ""
+        # Indent and colour the output
+        while IFS= read -r line; do
+            # Highlight error/warning lines
+            if [[ "$line" =~ ^error ]]; then
+                echo -e "  ${RED}${line}${RST}"
+            elif [[ "$line" =~ ^warning ]]; then
+                echo -e "  ${YLW}${line}${RST}"
+            elif [[ "$line" =~ ^"  -->" || "$line" =~ ^"   -->" ]]; then
+                echo -e "  ${CYN}${line}${RST}"
+            else
+                echo -e "  ${DIM}${line}${RST}"
+            fi
+        done < "$tmpout"
+        rm -f "$tmpout"
+        echo ""
+    fi
+}
+
+# ── Checks ────────────────────────────────────────────────────────────────────
+run_step "fmt"    cargo fmt --all -- --check
+run_step "check"  cargo check --workspace --all-targets --quiet
+run_step "clippy" cargo clippy --workspace --all-targets --quiet -- -D warnings
+run_step "wasm"   cargo build -p docs --target wasm32-unknown-unknown --quiet
+
+# ── Result ────────────────────────────────────────────────────────────────────
+echo "  ${DIM}────────────────────────────────${RST}"
+if [[ $fail -eq 0 ]]; then
+    echo -e "  ${GRN}${BLD}All checks passed${RST}  ${DIM}→ pushing${RST}"
+    echo ""
+    exit 0
+else
+    echo -e "  ${RED}${BLD}Push blocked${RST}  ${DIM}fix the issues above and re-push${RST}"
+    echo ""
+    echo -e "  ${DIM}Tip: run ${RST}${YLW}cargo clippy --fix --workspace --allow-dirty${RST}${DIM} for auto-fixes${RST}"
+    echo ""
+    exit 1
+fi

@@ -1,7 +1,7 @@
 #[cfg(test)]
+#[allow(clippy::module_inception)]
 mod tests {
     use crate::{Canvas, Color, DocumentBuilder, Metadata, Object, PageSize, TextBuilder};
-    use std::path::PathBuf;
 
     #[test]
     fn test_document_builder() {
@@ -54,7 +54,7 @@ mod tests {
         let doc = DocumentBuilder::new().with_page(PageSize::A4, text);
         let mut buf = Vec::new();
         doc.write(&mut buf).unwrap();
-        assert!(buf.len() > 0);
+        assert!(!buf.is_empty());
     }
 
     #[test]
@@ -116,12 +116,12 @@ mod tests {
 
         assert!(matches!(
             font_source,
-            crate::font::FontSource::Local(path) if path == PathBuf::from("/tmp/example.ttf")
+            crate::font::FontSource::Local(path) if path.as_path() == std::path::Path::new("/tmp/example.ttf")
         ));
         assert!(matches!(
             image_source,
             crate::image::ImageSource::Local(source)
-                if source.path == PathBuf::from("/tmp/example.png")
+                if source.path.as_path() == std::path::Path::new("/tmp/example.png")
         ));
     }
 

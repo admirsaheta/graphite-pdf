@@ -549,17 +549,12 @@ pub enum TextDecorationMode {
     Preserve,
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Default)]
 pub enum FontSubstitution {
     Disabled,
     FallbackFamilies(Vec<FontDescriptor>),
+    #[default]
     BestEffort,
-}
-
-impl Default for FontSubstitution {
-    fn default() -> Self {
-        Self::BestEffort
-    }
 }
 
 #[derive(Clone, Debug, PartialEq)]

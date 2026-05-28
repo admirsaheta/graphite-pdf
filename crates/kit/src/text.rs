@@ -4,9 +4,10 @@ use crate::vector::Color;
 use tracing::instrument;
 
 /// Text alignment options.
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Default)]
 pub enum TextAlignment {
     /// Left-aligned (default).
+    #[default]
     Left,
     /// Center-aligned.
     Center,
@@ -14,16 +15,11 @@ pub enum TextAlignment {
     Right,
 }
 
-impl Default for TextAlignment {
-    fn default() -> Self {
-        Self::Left
-    }
-}
-
 /// Text rendering mode.
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Default)]
 pub enum TextRenderingMode {
     /// Fill text (default).
+    #[default]
     Fill,
     /// Stroke text.
     Stroke,
@@ -41,14 +37,8 @@ pub enum TextRenderingMode {
     Clip,
 }
 
-impl Default for TextRenderingMode {
-    fn default() -> Self {
-        Self::Fill
-    }
-}
-
 /// Font weight options.
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Default)]
 pub enum FontWeight {
     /// Thin (100).
     Thin,
@@ -57,6 +47,7 @@ pub enum FontWeight {
     /// Light (300).
     Light,
     /// Normal (400, default).
+    #[default]
     Normal,
     /// Medium (500).
     Medium,
@@ -68,12 +59,6 @@ pub enum FontWeight {
     ExtraBold,
     /// Black (900).
     Black,
-}
-
-impl Default for FontWeight {
-    fn default() -> Self {
-        Self::Normal
-    }
 }
 
 /// Builder for constructing text content.

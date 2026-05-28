@@ -147,16 +147,11 @@ impl From<f64> for PageMargins {
 }
 
 /// Page orientation.
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Default)]
 pub enum PageOrientation {
     /// Portrait orientation (default).
+    #[default]
     Portrait,
     /// Landscape orientation.
     Landscape,
-}
-
-impl Default for PageOrientation {
-    fn default() -> Self {
-        Self::Portrait
-    }
 }

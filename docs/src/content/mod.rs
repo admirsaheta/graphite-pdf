@@ -164,10 +164,7 @@ pub fn get_static_content(section: &str, page: &str) -> Option<&'static str> {
 
 pub fn github_raw_url(section: &str, page: &str) -> Option<String> {
     if section == "crates" {
-        let crate_name = match page {
-            "kit" => "kit",
-            name => name,
-        };
+        let crate_name = page;
         Some(format!(
             "https://raw.githubusercontent.com/admirsaheta/graphitepdf/main/crates/{}/README.md",
             crate_name
