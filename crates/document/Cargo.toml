@@ -16,7 +16,7 @@ keywords = ["pdf", "document", "compat", "graphitepdf"]
 path = "src/lib.rs"
 
 [dependencies]
-graphitepdf_style = { package = "graphitepdf-style", path = "../style", version = "0.1.0" }
+graphitepdf-style.workspace = true
 graphitepdf-image.workspace = true
 graphitepdf-layout.workspace = true
 graphitepdf-primitives.workspace = true

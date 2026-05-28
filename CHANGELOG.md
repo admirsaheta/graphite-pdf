@@ -11,13 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Features
 
-- **images/fonts**: Add `graphitepdf-image` and `graphitepdf-font` crates ([`4b473fc`](https://github.com/admirsaheta/graphitepdf/commit/4b473fc))
-- **math/svg**: Add `graphitepdf-math` and `graphitepdf-svg` crates ([`029a364`](https://github.com/admirsaheta/graphitepdf/commit/029a364))
-- **kit**: Add `graphitepdf-kit` crate and `graphitepdf-errors` ([`3c024f9`](https://github.com/admirsaheta/graphitepdf/commit/3c024f9))
+- **images/fonts**: Add `graphitepdf-image` and `graphitepdf-font` crates ([`4b473fc`](https://github.com/admirsaheta/graphite-pdf/commit/4b473fc))
+- **math/svg**: Add `graphitepdf-math` and `graphitepdf-svg` crates ([`029a364`](https://github.com/admirsaheta/graphite-pdf/commit/029a364))
+- **kit**: Add `graphitepdf-kit` crate and `graphitepdf-errors` ([`3c024f9`](https://github.com/admirsaheta/graphite-pdf/commit/3c024f9))
 
 ### Miscellaneous
 
-- **docs**: Add READMEs to all workspace crates ([`41abdfb`](https://github.com/admirsaheta/graphitepdf/commit/41abdfb))
+- **docs**: Add READMEs to all workspace crates ([`41abdfb`](https://github.com/admirsaheta/graphite-pdf/commit/41abdfb))
 
 ### Crates in this release
 

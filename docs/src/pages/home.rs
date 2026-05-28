@@ -45,7 +45,7 @@ pub fn HomePage() -> Html {
                         </svg>
                     </Link<Route>>
                     <a
-                        href="https://github.com/admirsaheta/graphitepdf"
+                        href="https://github.com/admirsaheta/graphite-pdf"
                         target="_blank"
                         rel="noopener noreferrer"
                         class="inline-flex items-center gap-2 rounded-lg border border-[#3A3A38] bg-[#1E1E1C] px-5 py-2.5 text-sm font-semibold text-[#C4C4C0] transition-all hover:border-[#585856] hover:bg-[#2E2E2C]"

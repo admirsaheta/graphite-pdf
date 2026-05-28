@@ -101,13 +101,13 @@ resolver = "3"
 [workspace.package]
 version = "0.1.0"
 authors = ["admirsaheta <admir@flyrank.com>"]
-homepage = "https://github.com/admirsaheta/graphitepdf"
+homepage = "https://github.com/admirsaheta/graphite-pdf"
 categories = [
     "graphics",
     "rendering",
 ]
 license-file = "LICENSE"
-repository = "https://github.com/admirsaheta/graphitepdf"
+repository = "https://github.com/admirsaheta/graphite-pdf"
 edition = "2024"
 rust-version = "1.88"
 

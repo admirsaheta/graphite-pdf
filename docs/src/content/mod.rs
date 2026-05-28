@@ -90,7 +90,7 @@ graphitepdf = { workspace = true }
 
 ## Feature flags
 
-The top-level crate exposes feature flags for optional components. Check the [Cargo.toml](https://github.com/admirsaheta/graphitepdf/blob/main/Cargo.toml) for the current list.
+The top-level crate exposes feature flags for optional components. Check the [Cargo.toml](https://github.com/admirsaheta/graphite-pdf/blob/main/Cargo.toml) for the current list.
 
 ## Minimum Supported Rust Version
 
@@ -166,7 +166,7 @@ pub fn github_raw_url(section: &str, page: &str) -> Option<String> {
     if section == "crates" {
         let crate_name = page;
         Some(format!(
-            "https://raw.githubusercontent.com/admirsaheta/graphitepdf/main/crates/{}/README.md",
+            "https://raw.githubusercontent.com/admirsaheta/graphite-pdf/main/crates/{}/README.md",
             crate_name
         ))
     } else {
@@ -177,12 +177,12 @@ pub fn github_raw_url(section: &str, page: &str) -> Option<String> {
 pub fn github_edit_url(section: &str, page: &str) -> String {
     if section == "crates" {
         format!(
-            "https://github.com/admirsaheta/graphitepdf/edit/main/crates/{}/README.md",
+            "https://github.com/admirsaheta/graphite-pdf/edit/main/crates/{}/README.md",
             page
         )
     } else {
         format!(
-            "https://github.com/admirsaheta/graphitepdf/edit/main/docs/content/{}/{}.md",
+            "https://github.com/admirsaheta/graphite-pdf/edit/main/docs/content/{}/{}.md",
             section, page
         )
     }

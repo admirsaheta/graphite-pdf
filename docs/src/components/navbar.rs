@@ -62,7 +62,7 @@ pub fn Navbar() -> Html {
 
                 // GitHub link
                 <a
-                    href="https://github.com/admirsaheta/graphitepdf"
+                    href="https://github.com/admirsaheta/graphite-pdf"
                     target="_blank"
                     rel="noopener noreferrer"
                     class="flex items-center gap-1.5 text-[#6E6E6C] hover:text-[#C4C4C0] transition-colors"
@@ -105,7 +105,7 @@ pub fn Navbar() -> Html {
                             class="px-3 py-2 text-sm text-[#6E6E6C] hover:text-[#C4C4C0] rounded-md hover:bg-white/5">
                             {"API Reference"}
                         </a>
-                        <a href="https://github.com/admirsaheta/graphitepdf" target="_blank" rel="noopener noreferrer"
+                        <a href="https://github.com/admirsaheta/graphite-pdf" target="_blank" rel="noopener noreferrer"
                             class="px-3 py-2 text-sm text-[#6E6E6C] hover:text-[#C4C4C0] rounded-md hover:bg-white/5">
                             {"GitHub"}
                         </a>

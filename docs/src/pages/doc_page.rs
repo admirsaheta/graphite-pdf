@@ -133,7 +133,7 @@ fn DocError(props: &DocErrorProps) -> Html {
                 <p class="mt-1 text-[13px] text-[#6E6E6C]">{ &props.message }</p>
             </div>
             <a
-                href="https://github.com/admirsaheta/graphitepdf"
+                href="https://github.com/admirsaheta/graphite-pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="text-[13px] text-[#D4581A] hover:text-[#F58040] transition-colors"

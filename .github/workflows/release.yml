@@ -100,8 +100,20 @@ jobs:
       - name: Bump workspace version
         if: inputs.dry_run == false
         run: |
-          sed -i 's/^version = ".*"/version = "${{ steps.ver.outputs.next }}"/' Cargo.toml
-          cargo check -p graphitepdf --quiet   # refresh Cargo.lock
+          CURRENT="${{ steps.ver.outputs.current }}"
+          NEXT="${{ steps.ver.outputs.next }}"
+
+          # 1. Root Cargo.toml — update [workspace.package].version and all
+          #    [workspace.dependencies.*].version lines (line-start matches).
+          sed -i "s/^version = \"$CURRENT\"/version = \"$NEXT\"/" Cargo.toml
+
+          # 2. Any crate Cargo.toml that still has an inline hardcoded version
+          #    (e.g. inside a dep spec on one line).  Match only the exact current
+          #    workspace version so third-party deps at different versions are safe.
+          find . -name "Cargo.toml" -not -path "*/target/*" -not -path "./.git/*" \
+            -exec sed -i "s/version = \"$CURRENT\"/version = \"$NEXT\"/g" {} +
+
+          cargo check -p graphitepdf --quiet   # verify + refresh Cargo.lock
 
       # ── Generate CHANGELOG ──────────────────────────────────────────────────
       - name: Generate CHANGELOG
@@ -173,15 +185,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  # ═══════════════════════════════════════════════════════════════════════════
-  # 3. DOCS — rebuild and deploy to GitHub Pages after a successful publish
-  # ═══════════════════════════════════════════════════════════════════════════
-  docs:
-    name: Deploy docs
-    needs: publish
-    if: inputs.dry_run == false
-    uses: ./.github/workflows/docs.yml
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
