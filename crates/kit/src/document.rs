@@ -1,5 +1,5 @@
+use crate::backend_font::{Font, FontRegistry};
 use crate::error::Result;
-use crate::font::{Font, FontRegistry};
 use crate::metadata::Metadata;
 use crate::page::{PageMargins, PageSize};
 use crate::writer::PdfWriter;
@@ -46,7 +46,7 @@ impl DocumentBuilder {
         Self {
             metadata: Metadata::new(),
             pages: Vec::new(),
-            fonts: FontRegistry::new(),
+            fonts: FontRegistry::with_default_font(),
         }
     }
 
@@ -55,7 +55,7 @@ impl DocumentBuilder {
         self
     }
 
-    pub fn add_font(mut self, font: Font) -> (Self, String) {
+    pub fn add_font(mut self, font: impl Into<Font>) -> (Self, String) {
         let name = self.fonts.register(font);
         (self, name)
     }
@@ -76,10 +76,7 @@ impl DocumentBuilder {
 
     #[cfg_attr(feature = "tracing", instrument(skip(self, writer)))]
     pub fn write<W: std::io::Write>(self, mut writer: W) -> Result<()> {
-        let mut pdf_writer = PdfWriter::with_metadata(self.metadata);
-        for (_, (font, _)) in self.fonts.fonts {
-            pdf_writer.add_font(font);
-        }
+        let mut pdf_writer = PdfWriter::with_metadata_and_fonts(self.metadata, self.fonts);
         for page in self.pages {
             pdf_writer.add_page(page.size, page.content);
         }

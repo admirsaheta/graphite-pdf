@@ -1,0 +1,21 @@
+[package]
+name = "graphitepdf-stylesheet"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license-file.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+categories.workspace = true
+description = "Stylesheet primitives for GraphitePDF."
+documentation = "https://docs.rs/graphitepdf-stylesheet"
+keywords = ["pdf", "style", "stylesheet", "graphitepdf"]
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+graphitepdf-errors.workspace = true
+indexmap = "2.7"
+thiserror = "1.0"

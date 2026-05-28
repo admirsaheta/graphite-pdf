@@ -110,7 +110,8 @@ impl TextBuilder {
 
     /// Sets the text matrix and text position matrix.
     pub fn text_matrix(mut self, a: f64, b: f64, c: f64, d: f64, e: f64, f: f64) -> Self {
-        self.commands.push(format!("{} {} {} {} {} {} Tm", a, b, c, d, e, f));
+        self.commands
+            .push(format!("{} {} {} {} {} {} Tm", a, b, c, d, e, f));
         self
     }
 
@@ -170,7 +171,10 @@ impl TextBuilder {
                 _ => c.to_string(),
             })
             .collect::<String>();
-        self.commands.push(format!("{} {} ({}) \"", word_spacing, char_spacing, escaped));
+        self.commands.push(format!(
+            "{} {} ({}) \"",
+            word_spacing, char_spacing, escaped
+        ));
         self
     }
 
@@ -222,7 +226,8 @@ impl TextBuilder {
 
     /// Sets the text color.
     pub fn set_color(mut self, color: Color) -> Self {
-        self.commands.push(format!("{} {} {} rg", color.r, color.g, color.b));
+        self.commands
+            .push(format!("{} {} {} rg", color.r, color.g, color.b));
         self
     }
 
@@ -236,7 +241,8 @@ impl TextBuilder {
     pub fn rotate(mut self, angle: f64) -> Self {
         let cos_a = angle.cos();
         let sin_a = angle.sin();
-        self.commands.push(format!("{} {} {} {} 0 0 Tm", cos_a, sin_a, -sin_a, cos_a));
+        self.commands
+            .push(format!("{} {} {} {} 0 0 Tm", cos_a, sin_a, -sin_a, cos_a));
         self
     }
 
@@ -250,7 +256,8 @@ impl TextBuilder {
     pub fn skew(mut self, ax: f64, ay: f64) -> Self {
         let tan_x = ax.tan();
         let tan_y = ay.tan();
-        self.commands.push(format!("1 {} {} 1 0 0 Tm", tan_x, tan_y));
+        self.commands
+            .push(format!("1 {} {} 1 0 0 Tm", tan_x, tan_y));
         self
     }
 

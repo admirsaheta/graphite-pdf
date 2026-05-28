@@ -1,0 +1,22 @@
+[package]
+name = "graphitepdf-render"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license-file.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+categories.workspace = true
+description = "Minimal render command generation for GraphitePDF."
+documentation = "https://docs.rs/graphitepdf-render"
+keywords = ["pdf", "render", "graphics", "graphitepdf"]
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+graphitepdf-errors.workspace = true
+graphitepdf-layout.workspace = true
+graphitepdf-primitives.workspace = true
+thiserror = "1.0"

@@ -170,8 +170,14 @@ type DefinitionMap<'a> = HashMap<&'a str, &'a SvgNode>;
 
 impl SvgViewport {
     fn from_node(svg: &SvgNode, options: &SvgRenderOptions) -> Result<Self> {
-        let mut width_hint = svg.props.get("width").and_then(|value| parse_length(value).ok());
-        let mut height_hint = svg.props.get("height").and_then(|value| parse_length(value).ok());
+        let mut width_hint = svg
+            .props
+            .get("width")
+            .and_then(|value| parse_length(value).ok());
+        let mut height_hint = svg
+            .props
+            .get("height")
+            .and_then(|value| parse_length(value).ok());
         let view_box = if let Some(raw_view_box) = svg.props.get("viewBox") {
             parse_view_box(raw_view_box)?
         } else {
@@ -462,7 +468,14 @@ fn render_rect(node: &SvgNode, state: &RenderState, content: &mut String) -> Res
 
     content.push_str("q\n");
     apply_paint_state(content, state);
-    let _ = writeln!(content, "{} {} {} {} re", format_number(x), format_number(y), format_number(width), format_number(height));
+    let _ = writeln!(
+        content,
+        "{} {} {} {} re",
+        format_number(x),
+        format_number(y),
+        format_number(width),
+        format_number(height)
+    );
     apply_paint_operator(content, state, true);
     content.push_str("Q\n");
     Ok(())
@@ -508,7 +521,12 @@ fn render_ellipse_segments(
 
     content.push_str("q\n");
     apply_paint_state(content, state);
-    let _ = writeln!(content, "{} {} m", format_number(cx + rx), format_number(cy));
+    let _ = writeln!(
+        content,
+        "{} {} m",
+        format_number(cx + rx),
+        format_number(cy)
+    );
     let _ = writeln!(
         content,
         "{} {} {} {} {} {} c",
@@ -649,14 +667,8 @@ fn render_text_container(
                 }
             }
             SvgNodeKind::Tspan | SvgNodeKind::Text => {
-                cursor = render_node_text_fragment(
-                    child,
-                    state,
-                    content,
-                    options,
-                    definitions,
-                    cursor,
-                )?;
+                cursor =
+                    render_node_text_fragment(child, state, content, options, definitions, cursor)?;
             }
             _ => render_node(child, state, content, options, definitions)?,
         }
@@ -834,7 +846,9 @@ fn parse_line_join_prop(node: &SvgNode) -> Option<u8> {
 }
 
 fn parse_number_prop(node: &SvgNode, key: &str) -> Option<f64> {
-    node.props.get(key).and_then(|value| parse_length(value).ok())
+    node.props
+        .get(key)
+        .and_then(|value| parse_length(value).ok())
 }
 
 fn parse_length(value: &str) -> Result<f64> {
@@ -855,7 +869,9 @@ fn parse_number(value: &str) -> Result<f64> {
             end = index + character.len_utf8();
             continue;
         }
-        if (character == '+' || character == '-') && (is_first || matches!(trimmed[..index].chars().last(), Some('e' | 'E'))) {
+        if (character == '+' || character == '-')
+            && (is_first || matches!(trimmed[..index].chars().last(), Some('e' | 'E')))
+        {
             end = index + character.len_utf8();
             continue;
         }
@@ -879,9 +895,9 @@ fn parse_number(value: &str) -> Result<f64> {
         )));
     }
 
-    trimmed[..end].parse::<f64>().map_err(|_| {
-        GraphitePdfKitError::Render(format!("invalid SVG numeric value `{trimmed}`"))
-    })
+    trimmed[..end]
+        .parse::<f64>()
+        .map_err(|_| GraphitePdfKitError::Render(format!("invalid SVG numeric value `{trimmed}`")))
 }
 
 fn parse_view_box(value: &str) -> Result<SvgViewBox> {
@@ -1119,10 +1135,7 @@ fn tokenize_path_data(data: &str) -> Result<Vec<PathToken>> {
         }
 
         let number = data[start..end].parse::<f64>().map_err(|_| {
-            GraphitePdfKitError::Render(format!(
-                "invalid SVG path number `{}`",
-                &data[start..end]
-            ))
+            GraphitePdfKitError::Render(format!("invalid SVG path number `{}`", &data[start..end]))
         })?;
         tokens.push(PathToken::Number(number));
         index = end;
@@ -1509,9 +1522,7 @@ mod tests {
 
         let rendered = render_svg_node_to_page_content_with_options(
             &svg,
-            &SvgRenderOptions::new()
-                .position(24.0, 48.0)
-                .font_name("F1"),
+            &SvgRenderOptions::new().position(24.0, 48.0).font_name("F1"),
         )
         .expect("svg page content should render");
         let content = String::from_utf8(rendered).expect("content should be valid ASCII");

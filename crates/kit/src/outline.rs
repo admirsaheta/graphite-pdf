@@ -12,9 +12,7 @@ pub struct Outline {
 
 impl Outline {
     pub fn new() -> Self {
-        Self {
-            items: Vec::new(),
-        }
+        Self { items: Vec::new() }
     }
 
     pub fn add(&mut self, item: OutlineItem) {

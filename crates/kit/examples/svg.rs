@@ -1,10 +1,10 @@
 mod support;
 
 use anyhow::Result;
+use graphitepdf_kit::svg::parse_svg;
 use graphitepdf_kit::{
     DocumentBuilder, Metadata, PageSize, SvgRenderOptions, TextBuilder, ToPdfPageContent,
 };
-use graphitepdf_kit::svg::parse_svg;
 use support::output_path;
 
 fn main() -> Result<()> {

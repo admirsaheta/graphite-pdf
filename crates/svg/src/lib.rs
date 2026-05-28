@@ -7,10 +7,10 @@ use std::fmt;
 use std::str::from_utf8;
 
 use graphitepdf_primitives as P;
-use quick_xml::escape::unescape;
-use quick_xml::events::{BytesCData, BytesRef, BytesStart, BytesText, Event};
 use quick_xml::Reader;
 use quick_xml::XmlVersion;
+use quick_xml::escape::unescape;
+use quick_xml::events::{BytesCData, BytesRef, BytesStart, BytesText, Event};
 
 pub type SvgProps = BTreeMap<String, String>;
 
@@ -219,15 +219,15 @@ fn convert_attributes(attributes: impl IntoIterator<Item = (String, String)>) ->
     props
 }
 
-fn get_attributes_from_start(
-    event: &BytesStart<'_>,
-) -> Result<Vec<(String, String)>> {
+fn get_attributes_from_start(event: &BytesStart<'_>) -> Result<Vec<(String, String)>> {
     let mut attributes = Vec::new();
 
     for attribute in event.attributes() {
         let attribute = attribute?;
         let key = from_utf8(attribute.key.as_ref())?.to_string();
-        let value = attribute.normalized_value(XmlVersion::Implicit1_0)?.into_owned();
+        let value = attribute
+            .normalized_value(XmlVersion::Implicit1_0)?
+            .into_owned();
         attributes.push((key, value));
     }
 
@@ -439,10 +439,7 @@ pub fn try_parse_svg(svg_string: &str) -> Result<SvgNode> {
                     push_text_if_relevant(&mut stack, decode_general_reference(&reference)?);
                 }
             }
-            Event::Comment(_)
-            | Event::Decl(_)
-            | Event::DocType(_)
-            | Event::PI(_) => {}
+            Event::Comment(_) | Event::Decl(_) | Event::DocType(_) | Event::PI(_) => {}
             Event::Eof => break,
         }
 
@@ -489,14 +486,17 @@ mod tests {
 
     #[test]
     fn parses_dimensions_variants() {
-        let unitless = parse_svg(
-            r#"<svg xmlns="http://www.w3.org/2000/svg" width="200" height="150"></svg>"#,
-        );
+        let unitless =
+            parse_svg(r#"<svg xmlns="http://www.w3.org/2000/svg" width="200" height="150"></svg>"#);
         assert_eq!(
             unitless,
             node(
                 SvgNodeKind::Svg,
-                &[("height", "150"), ("width", "200"), ("xmlns", "http://www.w3.org/2000/svg")],
+                &[
+                    ("height", "150"),
+                    ("width", "200"),
+                    ("xmlns", "http://www.w3.org/2000/svg")
+                ],
                 vec![],
             )
         );
@@ -513,9 +513,8 @@ mod tests {
         assert_eq!(pt.props.get("width"), Some(&"72pt".to_string()));
         assert_eq!(pt.props.get("height"), Some(&"36pt".to_string()));
 
-        let inches = parse_svg(
-            r#"<svg xmlns="http://www.w3.org/2000/svg" width="1in" height="2in"></svg>"#,
-        );
+        let inches =
+            parse_svg(r#"<svg xmlns="http://www.w3.org/2000/svg" width="1in" height="2in"></svg>"#);
         assert_eq!(inches.props.get("width"), Some(&"1in".to_string()));
         assert_eq!(inches.props.get("height"), Some(&"2in".to_string()));
 
@@ -534,10 +533,12 @@ mod tests {
 
     #[test]
     fn parses_viewbox_and_missing_dimensions() {
-        let view_box = parse_svg(
-            r#"<svg xmlns="http://www.w3.org/2000/svg" viewBox="10 20 300 200"></svg>"#,
+        let view_box =
+            parse_svg(r#"<svg xmlns="http://www.w3.org/2000/svg" viewBox="10 20 300 200"></svg>"#);
+        assert_eq!(
+            view_box.props.get("viewBox"),
+            Some(&"10 20 300 200".to_string())
         );
-        assert_eq!(view_box.props.get("viewBox"), Some(&"10 20 300 200".to_string()));
 
         let no_dimensions = parse_svg(r#"<svg xmlns="http://www.w3.org/2000/svg"></svg>"#);
         assert_eq!(
@@ -568,11 +569,21 @@ mod tests {
             svg,
             node(
                 SvgNodeKind::Svg,
-                &[("height", "100"), ("width", "100"), ("xmlns", "http://www.w3.org/2000/svg")],
+                &[
+                    ("height", "100"),
+                    ("width", "100"),
+                    ("xmlns", "http://www.w3.org/2000/svg")
+                ],
                 vec![
                     node(
                         SvgNodeKind::Rect,
-                        &[("fill", "red"), ("height", "80"), ("width", "80"), ("x", "10"), ("y", "10")],
+                        &[
+                            ("fill", "red"),
+                            ("height", "80"),
+                            ("width", "80"),
+                            ("x", "10"),
+                            ("y", "10")
+                        ],
                         vec![],
                     ),
                     node(
@@ -587,11 +598,25 @@ mod tests {
                     ),
                     node(
                         SvgNodeKind::Line,
-                        &[("stroke", "black"), ("x1", "0"), ("x2", "100"), ("y1", "0"), ("y2", "100")],
+                        &[
+                            ("stroke", "black"),
+                            ("x1", "0"),
+                            ("x2", "100"),
+                            ("y1", "0"),
+                            ("y2", "100")
+                        ],
                         vec![],
                     ),
-                    node(SvgNodeKind::Polyline, &[("points", "0,0 50,50 100,0")], vec![]),
-                    node(SvgNodeKind::Polygon, &[("points", "50,0 100,100 0,100")], vec![]),
+                    node(
+                        SvgNodeKind::Polyline,
+                        &[("points", "0,0 50,50 100,0")],
+                        vec![]
+                    ),
+                    node(
+                        SvgNodeKind::Polygon,
+                        &[("points", "50,0 100,100 0,100")],
+                        vec![]
+                    ),
                 ],
             )
         );
@@ -623,10 +648,18 @@ mod tests {
             </svg>"#,
         );
         assert_eq!(gradients.children[0].kind, SvgNodeKind::Defs);
-        assert_eq!(gradients.children[0].children[0].kind, SvgNodeKind::LinearGradient);
-        assert_eq!(gradients.children[0].children[1].kind, SvgNodeKind::RadialGradient);
         assert_eq!(
-            gradients.children[0].children[0].children[0].props.get("stopColor"),
+            gradients.children[0].children[0].kind,
+            SvgNodeKind::LinearGradient
+        );
+        assert_eq!(
+            gradients.children[0].children[1].kind,
+            SvgNodeKind::RadialGradient
+        );
+        assert_eq!(
+            gradients.children[0].children[0].children[0]
+                .props
+                .get("stopColor"),
             Some(&"red".to_string())
         );
 
@@ -655,7 +688,10 @@ mod tests {
               </defs>
             </svg>"#,
         );
-        assert_eq!(clip_path.children[0].children[0].kind, SvgNodeKind::ClipPath);
+        assert_eq!(
+            clip_path.children[0].children[0].kind,
+            SvgNodeKind::ClipPath
+        );
 
         let image = parse_svg(
             r#"
@@ -667,7 +703,13 @@ mod tests {
             image.children[0],
             node(
                 SvgNodeKind::Image,
-                &[("height", "100"), ("href", "photo.png"), ("width", "100"), ("x", "0"), ("y", "0")],
+                &[
+                    ("height", "100"),
+                    ("href", "photo.png"),
+                    ("width", "100"),
+                    ("x", "0"),
+                    ("y", "0")
+                ],
                 vec![],
             )
         );
@@ -752,7 +794,12 @@ mod tests {
             inline_style.children[0],
             node(
                 SvgNodeKind::Rect,
-                &[("fill", "red"), ("opacity", "0.8"), ("stroke", "blue"), ("strokeWidth", "2px")],
+                &[
+                    ("fill", "red"),
+                    ("opacity", "0.8"),
+                    ("stroke", "blue"),
+                    ("strokeWidth", "2px")
+                ],
                 vec![],
             )
         );
@@ -802,7 +849,10 @@ mod tests {
               <text x="10" y="30">&lt;hello&gt; &amp; &quot;world&quot;</text>
             </svg>"#,
         );
-        assert_eq!(entities.children[0].children, vec![text("<hello> & \"world\"")]);
+        assert_eq!(
+            entities.children[0].children,
+            vec![text("<hello> & \"world\"")]
+        );
 
         let cdata = parse_svg(
             r#"
@@ -810,7 +860,10 @@ mod tests {
               <text x="10" y="30"><![CDATA[Some <special> text]]></text>
             </svg>"#,
         );
-        assert_eq!(cdata.children[0].children, vec![text("Some <special> text")]);
+        assert_eq!(
+            cdata.children[0].children,
+            vec![text("Some <special> text")]
+        );
     }
 
     #[test]
@@ -830,10 +883,22 @@ mod tests {
             skipped,
             node(
                 SvgNodeKind::Svg,
-                &[("height", "100"), ("width", "100"), ("xmlns", "http://www.w3.org/2000/svg")],
+                &[
+                    ("height", "100"),
+                    ("width", "100"),
+                    ("xmlns", "http://www.w3.org/2000/svg")
+                ],
                 vec![
-                    node(SvgNodeKind::Rect, &[("height", "50"), ("width", "50")], vec![]),
-                    node(SvgNodeKind::Circle, &[("cx", "50"), ("cy", "50"), ("r", "10")], vec![]),
+                    node(
+                        SvgNodeKind::Rect,
+                        &[("height", "50"), ("width", "50")],
+                        vec![]
+                    ),
+                    node(
+                        SvgNodeKind::Circle,
+                        &[("cx", "50"), ("cy", "50"), ("r", "10")],
+                        vec![]
+                    ),
                 ],
             )
         );
@@ -864,7 +929,10 @@ mod tests {
 
         assert_eq!(svg.children[0].kind, SvgNodeKind::Defs);
         assert_eq!(svg.children[1].kind, SvgNodeKind::Use);
-        assert_eq!(svg.children[1].props.get("href"), Some(&"#shape".to_string()));
+        assert_eq!(
+            svg.children[1].props.get("href"),
+            Some(&"#shape".to_string())
+        );
         assert_eq!(svg.children[1].props.get("x"), Some(&"20".to_string()));
         assert_eq!(svg.children[2].kind, SvgNodeKind::Use);
         assert_eq!(
@@ -906,12 +974,18 @@ mod tests {
         let invalid_view_box = parse_svg(
             r#"<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="bad"></svg>"#,
         );
-        assert_eq!(invalid_view_box.props.get("viewBox"), Some(&"bad".to_string()));
+        assert_eq!(
+            invalid_view_box.props.get("viewBox"),
+            Some(&"bad".to_string())
+        );
 
         let short_view_box = parse_svg(
             r#"<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100"></svg>"#,
         );
-        assert_eq!(short_view_box.props.get("viewBox"), Some(&"0 0 100".to_string()));
+        assert_eq!(
+            short_view_box.props.get("viewBox"),
+            Some(&"0 0 100".to_string())
+        );
     }
 
     #[test]
@@ -976,10 +1050,9 @@ mod tests {
 
     #[test]
     fn exposes_typed_and_fallible_api() {
-        let parsed = try_parse_svg(
-            r#"<svg xmlns="http://www.w3.org/2000/svg"><text>Hello</text></svg>"#,
-        )
-        .expect("valid SVG should parse");
+        let parsed =
+            try_parse_svg(r#"<svg xmlns="http://www.w3.org/2000/svg"><text>Hello</text></svg>"#)
+                .expect("valid SVG should parse");
 
         assert_eq!(parsed.kind, SvgNodeKind::Svg);
         assert_eq!(parsed.type_name(), P::Svg);

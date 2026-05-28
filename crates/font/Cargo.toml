@@ -1,0 +1,26 @@
+[package]
+name = "graphitepdf-font"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license-file.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+categories.workspace = true
+description = "Font primitives for GraphitePDF."
+documentation = "https://docs.rs/graphitepdf-font"
+keywords = ["pdf", "font", "typography", "graphitepdf"]
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+base64 = "0.22"
+graphitepdf-errors.workspace = true
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls"] }
+thiserror = "1.0"
+tokio = { version = "1", features = ["fs", "io-util", "macros", "net", "rt", "rt-multi-thread", "sync"] }
+
+[dev-dependencies]
+tempfile = "3"

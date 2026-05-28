@@ -2,8 +2,14 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
 
+pub fn workspace_path(relative: impl AsRef<Path>) -> PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .join(relative)
+}
+
 fn default_output_dir() -> PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR")).join("../../.artifacts/examples/kit")
+    workspace_path(".artifacts/examples/kit")
 }
 
 pub fn output_path(example_name: &str) -> std::io::Result<PathBuf> {

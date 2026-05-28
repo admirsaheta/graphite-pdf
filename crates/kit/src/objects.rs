@@ -89,7 +89,9 @@ impl Object {
                 entries.push((key_str, value.into()));
                 Ok(())
             }
-            _ => Err(GraphitePdfKitError::InvalidObject("Cannot insert into non-Dictionary object".to_string())),
+            _ => Err(GraphitePdfKitError::InvalidObject(
+                "Cannot insert into non-Dictionary object".to_string(),
+            )),
         }
     }
 
@@ -110,7 +112,9 @@ impl Object {
                 items.push(item.into());
                 Ok(())
             }
-            _ => Err(GraphitePdfKitError::InvalidObject("Cannot push into non-Array object".to_string())),
+            _ => Err(GraphitePdfKitError::InvalidObject(
+                "Cannot push into non-Array object".to_string(),
+            )),
         }
     }
 

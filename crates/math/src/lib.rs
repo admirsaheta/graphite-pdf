@@ -167,7 +167,8 @@ pub fn render_math_with_options(latex: &str, options: &MathOptions) -> Result<Ma
         .insert(String::from("color"), options.color.clone());
 
     if options.debug {
-        svg.props.insert(String::from("debug"), String::from("true"));
+        svg.props
+            .insert(String::from("debug"), String::from("true"));
     }
 
     resolve_current_color(&mut svg, &options.color);
@@ -346,14 +347,17 @@ mod tests {
 
     #[test]
     fn renders_display_math_with_default_dimensions() {
-        let rendered = render_math(r"\frac{-b \pm \sqrt{b^2 - 4ac}}{2a}")
-            .expect("display math should render");
+        let rendered =
+            render_math(r"\frac{-b \pm \sqrt{b^2 - 4ac}}{2a}").expect("display math should render");
 
         assert_eq!(rendered.svg.kind, SvgNodeKind::Svg);
         assert!(rendered.raw_svg.contains("<svg"));
         assert_eq!(rendered.svg.props.get("height"), Some(&String::from("22")));
         assert!(rendered.svg.props.contains_key("width"));
-        assert_eq!(rendered.svg.props.get("color"), Some(&String::from("black")));
+        assert_eq!(
+            rendered.svg.props.get("color"),
+            Some(&String::from("black"))
+        );
         assert!(!contains_current_color(&rendered.svg));
     }
 
@@ -369,7 +373,10 @@ mod tests {
         )
         .expect("math with explicit options should render");
 
-        assert_eq!(rendered.svg.props.get("width"), Some(&String::from("180px")));
+        assert_eq!(
+            rendered.svg.props.get("width"),
+            Some(&String::from("180px"))
+        );
         assert_eq!(rendered.svg.props.get("height"), Some(&String::from("40")));
         assert_eq!(
             rendered.svg.props.get("color"),
@@ -424,11 +431,8 @@ mod tests {
 
     #[test]
     fn rejects_non_numeric_single_dimension_strings() {
-        let error = render_math_with_options(
-            r"E = mc^2",
-            &MathOptions::new().width("wide"),
-        )
-        .expect_err("non-numeric width should fail when deriving height");
+        let error = render_math_with_options(r"E = mc^2", &MathOptions::new().width("wide"))
+            .expect_err("non-numeric width should fail when deriving height");
 
         assert!(matches!(error, Error::InvalidDimension { .. }));
     }

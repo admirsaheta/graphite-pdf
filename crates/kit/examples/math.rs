@@ -1,10 +1,10 @@
 mod support;
 
 use anyhow::Result;
+use graphitepdf_kit::math::{MathOptions, render_math_with_options};
 use graphitepdf_kit::{
     DocumentBuilder, Metadata, PageSize, SvgRenderOptions, TextBuilder, ToPdfPageContent,
 };
-use graphitepdf_kit::math::{MathOptions, render_math_with_options};
 use support::output_path;
 
 fn main() -> Result<()> {
@@ -14,7 +14,10 @@ fn main() -> Result<()> {
     )?;
     let inline_formula = render_math_with_options(
         r"e^{i\pi} + 1 = 0",
-        &MathOptions::new().inline(true).height(24.0).color("#0f766e"),
+        &MathOptions::new()
+            .inline(true)
+            .height(24.0)
+            .color("#0f766e"),
     )?;
 
     let title = TextBuilder::new()
@@ -30,7 +33,9 @@ fn main() -> Result<()> {
         .finish();
 
     let display_content = display_formula.to_pdf_page_content_with_options(
-        &SvgRenderOptions::new().position(56.0, 620.0).font_name("F1"),
+        &SvgRenderOptions::new()
+            .position(56.0, 620.0)
+            .font_name("F1"),
     )?;
     let inline_label = TextBuilder::new()
         .font("F1", 12.0)
@@ -38,7 +43,9 @@ fn main() -> Result<()> {
         .text("Inline identity:")
         .finish();
     let inline_content = inline_formula.to_pdf_page_content_with_options(
-        &SvgRenderOptions::new().position(132.0, 544.0).font_name("F1"),
+        &SvgRenderOptions::new()
+            .position(132.0, 544.0)
+            .font_name("F1"),
     )?;
 
     let content = [title, body, display_content, inline_label, inline_content].concat();

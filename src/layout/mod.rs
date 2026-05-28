@@ -1,6 +1,6 @@
 use crate::document::{Document, ImageSource, Node, NodeKind, PdfMetadata, TextNode};
 use crate::error::{GraphitePdfError, Result};
-use crate::style::Style;
+use crate::style::{FontDescriptor, Style};
 use graphitepdf_primitives::{Bounds, Size};
 
 #[derive(Clone, Debug, Default)]
@@ -19,10 +19,14 @@ impl LayoutEngine {
             .iter()
             .map(|page| {
                 let size = Size::new(612.0, 792.0);
-                self.layout_page(size, page.style(), match page.kind() {
-                    NodeKind::View { children } => children,
-                    _ => &[],
-                })
+                self.layout_page(
+                    size,
+                    page.style(),
+                    match page.kind() {
+                        NodeKind::View { children } => children,
+                        _ => &[],
+                    },
+                )
             })
             .collect::<Result<Vec<_>>>()?;
 
@@ -132,9 +136,103 @@ pub struct LayoutNode {
     pub content: LayoutContent,
 }
 
+impl LayoutNode {
+    pub fn font_descriptor(&self) -> Option<FontDescriptor> {
+        self.style.font_descriptor()
+    }
+}
+
 #[derive(Clone, Debug)]
 pub enum LayoutContent {
     View { children: Vec<LayoutNode> },
     Text { text: String },
     Image { source: ImageSource },
+}
+
+impl LayoutContent {
+    pub fn image_source(&self) -> Option<&ImageSource> {
+        match self {
+            Self::Image { source } => Some(source),
+            Self::View { .. } | Self::Text { .. } => None,
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::document::ImageNode;
+    use crate::style::{StyleValue, Stylesheet, StylesheetContainer};
+    use graphitepdf_font::{FontStyle, FontWeight as FontVariantWeight};
+    use graphitepdf_image::RemoteImageSource;
+
+    #[test]
+    fn layout_preserves_stylesheet_driven_font_metadata() {
+        let engine = LayoutEngine;
+        let container = StylesheetContainer::new(612.0, 792.0);
+        let stylesheet = Stylesheet::new(StyleValue::Object(
+            [
+                ("fontFamily".to_string(), "Inter".into()),
+                ("fontStyle".to_string(), "italic".into()),
+                ("fontWeight".to_string(), 700.into()),
+            ]
+            .into_iter()
+            .collect(),
+        ));
+        let page = Node::new(
+            NodeKind::View {
+                children: vec![Node::from_stylesheet(
+                    NodeKind::Text(TextNode::new("Styled")),
+                    &container,
+                    &stylesheet,
+                )],
+            },
+            Style::default(),
+        );
+        let document = Document::new().add_page(page);
+
+        let layout = engine
+            .layout_document(&document)
+            .expect("document should layout");
+        let descriptor = layout.pages[0].nodes[0]
+            .font_descriptor()
+            .expect("text node should expose font descriptor");
+
+        assert_eq!(descriptor.family(), "Inter");
+        assert_eq!(descriptor.font_style(), FontStyle::Italic);
+        assert_eq!(descriptor.font_weight(), FontVariantWeight::BOLD);
+    }
+
+    #[test]
+    fn layout_retains_asset_backed_image_sources() {
+        let engine = LayoutEngine;
+        let page = Node::new(
+            NodeKind::View {
+                children: vec![Node::new(
+                    NodeKind::Image(ImageNode::new(RemoteImageSource::new(
+                        "https://example.com/image.png",
+                    ))),
+                    Style::default(),
+                )],
+            },
+            Style::default(),
+        );
+        let document = Document::new().add_page(page);
+
+        let layout = engine
+            .layout_document(&document)
+            .expect("document should layout");
+
+        let source = layout.pages[0].nodes[0]
+            .content
+            .image_source()
+            .expect("image content should expose its source");
+
+        assert_eq!(
+            source.as_asset_source(),
+            graphitepdf_image::ImageSource::from(RemoteImageSource::new(
+                "https://example.com/image.png",
+            ))
+        );
+    }
 }

@@ -1,6 +1,6 @@
+use crate::backend_font::{Font, FontRegistry};
 use crate::compress::flate_encode;
 use crate::error::Result;
-use crate::font::{Font, FontRegistry, StandardFont};
 use crate::metadata::Metadata;
 use crate::objects::Object;
 use crate::page::PageSize;
@@ -28,15 +28,15 @@ impl PdfWriter {
             buffer: Vec::new(),
             pages: Vec::new(),
             metadata: Metadata::new(),
-            fonts: FontRegistry::new(),
+            fonts: FontRegistry::with_default_font(),
         }
     }
 
     pub fn with_metadata(metadata: Metadata) -> Self {
-        let mut fonts = FontRegistry::new();
-        // Add default Helvetica font
-        fonts.register(Font::standard(StandardFont::Helvetica));
+        Self::with_metadata_and_fonts(metadata, FontRegistry::with_default_font())
+    }
 
+    pub(crate) fn with_metadata_and_fonts(metadata: Metadata, fonts: FontRegistry) -> Self {
         Self {
             buffer: Vec::new(),
             pages: Vec::new(),
@@ -49,7 +49,7 @@ impl PdfWriter {
         self.pages.push(PageInfo { size, content });
     }
 
-    pub fn add_font(&mut self, font: Font) -> String {
+    pub fn add_font(&mut self, font: impl Into<Font>) -> String {
         self.fonts.register(font)
     }
 
@@ -61,12 +61,13 @@ impl PdfWriter {
         let mut objects = Vec::new();
 
         // 1. Add all fonts
-        let mut font_ids = std::collections::HashMap::new();
+        let mut font_ids: std::collections::HashMap<String, usize> =
+            std::collections::HashMap::new();
         for (name, (font, _)) in &self.fonts.fonts {
             let font_obj = Object::dict([
                 ("Type", Object::name("Font")),
                 ("Subtype", Object::name("Type1")),
-                ("BaseFont", Object::name(&font.name)),
+                ("BaseFont", Object::name(font.base_font_name())),
                 ("Encoding", Object::name("WinAnsiEncoding")),
             ]);
             font_ids.insert(name.clone(), objects.len() + 1);
@@ -78,9 +79,7 @@ impl PdfWriter {
         for page in &self.pages {
             let compressed = flate_encode(&page.content)?;
             let content_obj = Object::Stream {
-                dict: vec![
-                    ("Filter".to_string(), Object::name("FlateDecode")),
-                ],
+                dict: vec![("Filter".to_string(), Object::name("FlateDecode"))],
                 data: compressed,
             };
             content_ids.push(objects.len() + 1);
@@ -90,23 +89,22 @@ impl PdfWriter {
         // 3. Add all page objects
         let mut page_ids = Vec::new();
         for (i, page) in self.pages.iter().enumerate() {
-            let mut font_dict = vec![];
+            let mut font_dict: Vec<(String, Object)> = Vec::new();
             for (name, &id) in &font_ids {
                 font_dict.push((name.clone(), Object::Ref(id as u64)));
             }
 
             let page_obj = Object::dict([
                 ("Type", Object::name("Page")),
-                ("MediaBox", Object::array([
-                    0.0,
-                    0.0,
-                    page.size.width,
-                    page.size.height,
-                ])),
+                (
+                    "MediaBox",
+                    Object::array([0.0, 0.0, page.size.width, page.size.height]),
+                ),
                 ("Contents", Object::Ref(content_ids[i] as u64)),
-                ("Resources", Object::dict([
-                    ("Font", Object::Dict(font_dict)),
-                ])),
+                (
+                    "Resources",
+                    Object::dict([("Font", Object::Dict(font_dict))]),
+                ),
             ]);
             page_ids.push(objects.len() + 1);
             objects.push(page_obj);
@@ -117,7 +115,15 @@ impl PdfWriter {
         objects.push(Object::dict([
             ("Type", Object::name("Pages")),
             ("Count", Object::Integer(page_ids.len() as i64)),
-            ("Kids", Object::Array(page_ids.into_iter().map(|id| Object::Ref(id as u64)).collect())),
+            (
+                "Kids",
+                Object::Array(
+                    page_ids
+                        .into_iter()
+                        .map(|id| Object::Ref(id as u64))
+                        .collect(),
+                ),
+            ),
         ]));
 
         // 5. Add catalog
@@ -128,9 +134,8 @@ impl PdfWriter {
         ]));
 
         // 6. Add info dictionary
-        let mut info_dict_entries = vec![
-            ("Producer".to_string(), Object::string("GraphitePDF Kit")),
-        ];
+        let mut info_dict_entries =
+            vec![("Producer".to_string(), Object::string("GraphitePDF Kit"))];
         if let Some(title) = &self.metadata.title {
             info_dict_entries.push(("Title".to_string(), Object::string(title)));
         }
@@ -174,7 +179,8 @@ impl PdfWriter {
             ("Size", Object::Integer((offsets.len() + 1) as i64)),
             ("Root", Object::Ref(catalog_id as u64)),
             ("Info", Object::Ref(info_id as u64)),
-        ]).write(&mut self.buffer)?;
+        ])
+        .write(&mut self.buffer)?;
         writeln!(&mut self.buffer)?;
 
         writeln!(&mut self.buffer, "startxref")?;

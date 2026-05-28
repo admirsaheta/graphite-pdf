@@ -1,4 +1,4 @@
-use criterion::{criterion_group, criterion_main, Criterion};
+use criterion::{Criterion, criterion_group, criterion_main};
 use graphitepdf_kit::*;
 use std::io::Cursor;
 
@@ -23,7 +23,7 @@ fn bench_graphics(c: &mut Criterion) {
         b.iter(|| {
             Canvas::new()
                 .fill_color(Color::RED)
-                .rect(100.0, 600.0, 200.0,50.0)
+                .rect(100.0, 600.0, 200.0, 50.0)
                 .fill()
                 .finish()
         })

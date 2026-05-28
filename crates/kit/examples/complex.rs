@@ -35,7 +35,7 @@ fn main() {
                 .title("Complex Example")
                 .author("GraphitePDF")
                 .subject("PDF generation with Rust")
-                .keywords(["rust", "pdf", "generation"])
+                .keywords(["rust", "pdf", "generation"]),
         )
         .with_page(PageSize::A4, content);
 

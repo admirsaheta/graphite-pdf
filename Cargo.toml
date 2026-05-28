@@ -1,5 +1,20 @@
 [workspace]
-members = [".", "crates/errors", "crates/kit", "crates/math", "crates/primitives", "crates/svg", "crates/utils"]
+members = [
+    ".",
+    "crates/errors",
+    "crates/font",
+    "crates/image",
+    "crates/kit",
+    "crates/layout",
+    "crates/math",
+    "crates/primitives",
+    "crates/render",
+    "crates/renderer",
+    "crates/stylesheet",
+    "crates/svg",
+    "crates/textkit",
+    "crates/utils",
+]
 resolver = "3"
 
 [workspace.package]
@@ -14,10 +29,17 @@ categories = ["graphics", "rendering"]
 
 [workspace.dependencies]
 graphitepdf-errors = { path = "crates/errors", version = "0.1.0" }
+graphitepdf-font = { path = "crates/font", version = "0.1.0" }
+graphitepdf-image = { path = "crates/image", version = "0.1.0" }
 graphitepdf-kit = { path = "crates/kit", version = "0.1.0" }
+graphitepdf-layout = { path = "crates/layout", version = "0.1.0" }
 graphitepdf-math = { path = "crates/math", version = "0.1.0" }
 graphitepdf-primitives = { path = "crates/primitives", version = "0.1.0" }
+graphitepdf-render = { path = "crates/render", version = "0.1.0" }
+graphitepdf-renderer = { path = "crates/renderer", version = "0.1.0" }
+graphitepdf-stylesheet = { path = "crates/stylesheet", version = "0.1.0" }
 graphitepdf-svg = { path = "crates/svg", version = "0.1.0" }
+graphitepdf-textkit = { path = "crates/textkit", version = "0.1.0" }
 graphitepdf-utils = { path = "crates/utils", version = "0.1.0" }
 
 [package]
@@ -35,8 +57,15 @@ keywords = ["pdf", "renderer", "layout", "document", "graphics"]
 
 [dependencies]
 graphitepdf-errors.workspace = true
+graphitepdf-font.workspace = true
+graphitepdf-image.workspace = true
 graphitepdf-kit.workspace = true
+graphitepdf-layout.workspace = true
 graphitepdf-math.workspace = true
 graphitepdf-primitives.workspace = true
+graphitepdf-render.workspace = true
+graphitepdf-renderer.workspace = true
+graphitepdf-stylesheet.workspace = true
 graphitepdf-svg.workspace = true
+graphitepdf-textkit.workspace = true
 graphitepdf-utils.workspace = true

@@ -1,6 +1,6 @@
+use crate::page::PageSize;
 use crate::text::TextBuilder;
 use crate::vector::{Canvas, Color};
-use crate::page::PageSize;
 
 #[cfg(feature = "tracing")]
 use tracing::instrument;
@@ -128,7 +128,12 @@ impl TableBuilder {
         let mut canvas = Canvas::new();
         let mut y = self.y;
 
-        let num_cols = self.rows.iter().map(|row| row.cells.len()).max().unwrap_or(0);
+        let num_cols = self
+            .rows
+            .iter()
+            .map(|row| row.cells.len())
+            .max()
+            .unwrap_or(0);
         let col_widths = if !self.column_widths.is_empty() && self.column_widths.len() == num_cols {
             self.column_widths.clone()
         } else {

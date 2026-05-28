@@ -1,11 +1,13 @@
 #[cfg(feature = "fonts-engine")]
 use crate::error::{GraphitePdfKitError, Result};
+use graphitepdf_font::{LoadedFont, StandardFont};
 use std::collections::HashMap;
 
 #[derive(Clone, Debug)]
 pub struct Font {
     pub name: String,
     pub data: Vec<u8>,
+    standard_font: Option<StandardFont>,
 }
 
 impl Font {
@@ -18,6 +20,7 @@ impl Font {
         Ok(Self {
             name: name.into(),
             data,
+            standard_font: None,
         })
     }
 
@@ -25,6 +28,7 @@ impl Font {
         Self {
             name: name.as_str().to_string(),
             data: Vec::new(),
+            standard_font: Some(name),
         }
     }
 
@@ -36,14 +40,26 @@ impl Font {
         &self.data
     }
 
+    pub const fn standard_font(&self) -> Option<StandardFont> {
+        self.standard_font
+    }
+
+    pub fn base_font_name(&self) -> &str {
+        match self.standard_font {
+            Some(font) => font.as_str(),
+            None => self.name.as_str(),
+        }
+    }
+
     #[cfg(feature = "fonts-engine")]
     pub fn measure_text_width(&self, text: &str, font_size: f64) -> Result<f64> {
         if self.data.is_empty() {
             // For standard fonts, use rough estimate
             Ok(text.len() as f64 * font_size * 0.6)
         } else {
-            let face = ttf_parser::Face::parse(&self.data, 0)
-                .map_err(|e| GraphitePdfKitError::FontError(format!("Failed to parse font: {:?}", e)))?;
+            let face = ttf_parser::Face::parse(&self.data, 0).map_err(|e| {
+                GraphitePdfKitError::FontError(format!("Failed to parse font: {:?}", e))
+            })?;
 
             let units_per_em = face.units_per_em() as f64;
             let scale = font_size / units_per_em;
@@ -61,42 +77,29 @@ impl Font {
     }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub enum StandardFont {
-    TimesRoman,
-    TimesBold,
-    TimesItalic,
-    TimesBoldItalic,
-    Helvetica,
-    HelveticaBold,
-    HelveticaOblique,
-    HelveticaBoldOblique,
-    Courier,
-    CourierBold,
-    CourierOblique,
-    CourierBoldOblique,
-    Symbol,
-    ZapfDingbats,
+impl From<StandardFont> for Font {
+    fn from(value: StandardFont) -> Self {
+        Self::standard(value)
+    }
 }
 
-impl StandardFont {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::TimesRoman => "Times-Roman",
-            Self::TimesBold => "Times-Bold",
-            Self::TimesItalic => "Times-Italic",
-            Self::TimesBoldItalic => "Times-BoldItalic",
-            Self::Helvetica => "Helvetica",
-            Self::HelveticaBold => "Helvetica-Bold",
-            Self::HelveticaOblique => "Helvetica-Oblique",
-            Self::HelveticaBoldOblique => "Helvetica-BoldOblique",
-            Self::Courier => "Courier",
-            Self::CourierBold => "Courier-Bold",
-            Self::CourierOblique => "Courier-Oblique",
-            Self::CourierBoldOblique => "Courier-BoldOblique",
-            Self::Symbol => "Symbol",
-            Self::ZapfDingbats => "ZapfDingbats",
+impl From<&LoadedFont> for Font {
+    fn from(value: &LoadedFont) -> Self {
+        if let Some(font) = value.standard_font() {
+            return Self::standard(font);
         }
+
+        Self {
+            name: value.descriptor().family().to_string(),
+            data: value.bytes().map(ToOwned::to_owned).unwrap_or_default(),
+            standard_font: None,
+        }
+    }
+}
+
+impl From<LoadedFont> for Font {
+    fn from(value: LoadedFont) -> Self {
+        Self::from(&value)
     }
 }
 
@@ -114,7 +117,14 @@ impl FontRegistry {
         }
     }
 
-    pub fn register(&mut self, font: Font) -> String {
+    pub fn with_default_font() -> Self {
+        let mut registry = Self::new();
+        registry.register(Font::standard(StandardFont::Helvetica));
+        registry
+    }
+
+    pub fn register(&mut self, font: impl Into<Font>) -> String {
+        let font = font.into();
         let id = self.next_id;
         let name = format!("F{}", id);
         self.next_id += 1;

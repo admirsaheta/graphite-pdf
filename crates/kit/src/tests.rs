@@ -1,8 +1,7 @@
 #[cfg(test)]
 mod tests {
-    use crate::{
-        Canvas, Color, DocumentBuilder, Metadata, Object, PageSize, TextBuilder,
-    };
+    use crate::{Canvas, Color, DocumentBuilder, Metadata, Object, PageSize, TextBuilder};
+    use std::path::PathBuf;
 
     #[test]
     fn test_document_builder() {
@@ -32,10 +31,7 @@ mod tests {
 
     #[test]
     fn test_canvas_builder() {
-        let canvas = Canvas::new()
-            .rect(0.0, 0.0, 100.0, 100.0)
-            .fill()
-            .finish();
+        let canvas = Canvas::new().rect(0.0, 0.0, 100.0, 100.0).fill().finish();
         assert!(!canvas.is_empty());
     }
 
@@ -59,6 +55,73 @@ mod tests {
         let mut buf = Vec::new();
         doc.write(&mut buf).unwrap();
         assert!(buf.len() > 0);
+    }
+
+    #[test]
+    fn test_custom_font_name_stays_stable_when_writing() {
+        let (doc, font_name) = DocumentBuilder::new().add_font(crate::Font::standard(
+            crate::font::StandardFont::CourierBold,
+        ));
+        let text = TextBuilder::new()
+            .font(&font_name, 24.0)
+            .position(100.0, 700.0)
+            .text("Hello, Courier!")
+            .finish();
+
+        let mut buf = Vec::new();
+        doc.with_page(PageSize::A4, text).write(&mut buf).unwrap();
+
+        let pdf = String::from_utf8_lossy(&buf);
+        assert_eq!(font_name, "F2");
+        assert!(pdf.contains(&format!("/{font_name} ")));
+        assert!(pdf.contains("/BaseFont /Courier-Bold"));
+    }
+
+    #[test]
+    fn test_font_registry_accepts_concrete_graphitepdf_font_types() {
+        let mut registry = crate::FontRegistry::with_default_font();
+        let font_name = registry.register(graphitepdf_font::StandardFont::CourierBold);
+
+        assert_eq!(font_name, "F2");
+        assert!(matches!(
+            registry.get(&font_name),
+            Some(font) if font.standard_font() == Some(graphitepdf_font::StandardFont::CourierBold)
+        ));
+    }
+
+    #[test]
+    fn test_document_builder_accepts_concrete_graphitepdf_font_types() {
+        let (doc, font_name) = DocumentBuilder::new().add_font(graphitepdf_font::StandardFont::CourierBold);
+        let text = TextBuilder::new()
+            .font(&font_name, 24.0)
+            .position(100.0, 700.0)
+            .text("Hello from shared font")
+            .finish();
+
+        let mut buf = Vec::new();
+        doc.with_page(PageSize::A4, text).write(&mut buf).unwrap();
+
+        let pdf = String::from_utf8_lossy(&buf);
+        assert_eq!(font_name, "F2");
+        assert!(pdf.contains("/BaseFont /Courier-Bold"));
+    }
+
+    #[test]
+    fn test_shared_font_and_image_modules_are_re_exported() {
+        let font_source = crate::font::FontSource::local("/tmp/example.ttf");
+        let image_source = crate::image::ImageSource::from(crate::image::LocalImageSource::new(
+            "/tmp/example.png",
+        ));
+
+        assert!(matches!(
+            font_source,
+            crate::font::FontSource::Local(path) if path == PathBuf::from("/tmp/example.ttf")
+        ));
+        assert!(matches!(
+            image_source,
+            crate::image::ImageSource::Local(source)
+                if source.path == PathBuf::from("/tmp/example.png")
+        ));
     }
 
     #[test]
