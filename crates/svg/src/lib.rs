@@ -256,23 +256,21 @@ fn push_text_if_relevant(stack: &mut [OpenNode], text: String) {
     }
 
     if text.trim().is_empty() {
-        if let Some(last_child) = parent.node.children.last_mut() {
-            if last_child.kind == SvgNodeKind::TextInstance {
-                if let Some(existing_value) = last_child.value.as_mut() {
-                    existing_value.push_str(&text);
-                }
-            }
+        if let Some(last_child) = parent.node.children.last_mut()
+            && last_child.kind == SvgNodeKind::TextInstance
+            && let Some(existing_value) = last_child.value.as_mut()
+        {
+            existing_value.push_str(&text);
         }
         return;
     }
 
-    if let Some(last_child) = parent.node.children.last_mut() {
-        if last_child.kind == SvgNodeKind::TextInstance {
-            if let Some(existing_value) = last_child.value.as_mut() {
-                existing_value.push_str(&text);
-                return;
-            }
-        }
+    if let Some(last_child) = parent.node.children.last_mut()
+        && last_child.kind == SvgNodeKind::TextInstance
+        && let Some(existing_value) = last_child.value.as_mut()
+    {
+        existing_value.push_str(&text);
+        return;
     }
 
     parent

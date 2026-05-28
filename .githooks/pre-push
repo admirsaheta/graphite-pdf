@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ── Colours ───────────────────────────────────────────────────────────────────
 BLD='\033[1m'
 DIM='\033[2m'
 RED='\033[0;31m'
@@ -13,7 +12,6 @@ RST='\033[0m'
 PASS="${GRN}✓${RST}"
 FAIL="${RED}✗${RST}"
 
-# ── Header ────────────────────────────────────────────────────────────────────
 echo ""
 echo "  ${BLD}graphitepdf${RST}  ${DIM}pre-push${RST}"
 echo "  ${DIM}────────────────────────────────${RST}"
@@ -22,18 +20,11 @@ echo ""
 fail=0
 
 # ── Step runner ───────────────────────────────────────────────────────────────
-# Usage: run_step "label" command [args...]
-# Prints label, runs command, shows ✓ or ✗ with output on failure.
 run_step() {
-    local label="$1"
-    shift
+    local label="$1"; shift
     local cmd=("$@")
-
     printf "  %-8s " "$label"
-
-    local tmpout
-    tmpout=$(mktemp)
-
+    local tmpout; tmpout=$(mktemp)
     if "${cmd[@]}" >"$tmpout" 2>&1; then
         echo -e "$PASS"
         rm -f "$tmpout"
@@ -41,17 +32,11 @@ run_step() {
         echo -e "$FAIL"
         fail=1
         echo ""
-        # Indent and colour the output
         while IFS= read -r line; do
-            # Highlight error/warning lines
-            if [[ "$line" =~ ^error ]]; then
-                echo -e "  ${RED}${line}${RST}"
-            elif [[ "$line" =~ ^warning ]]; then
-                echo -e "  ${YLW}${line}${RST}"
-            elif [[ "$line" =~ ^"  -->" || "$line" =~ ^"   -->" ]]; then
-                echo -e "  ${CYN}${line}${RST}"
-            else
-                echo -e "  ${DIM}${line}${RST}"
+            if   [[ "$line" =~ ^error   ]]; then echo -e "  ${RED}${line}${RST}"
+            elif [[ "$line" =~ ^warning ]]; then echo -e "  ${YLW}${line}${RST}"
+            elif [[ "$line" =~ ^"  -->" || "$line" =~ ^"   -->" ]]; then echo -e "  ${CYN}${line}${RST}"
+            else echo -e "  ${DIM}${line}${RST}"
             fi
         done < "$tmpout"
         rm -f "$tmpout"
@@ -59,13 +44,47 @@ run_step() {
     fi
 }
 
-# ── Checks ────────────────────────────────────────────────────────────────────
+# ── Phase 1: Auto-fix ─────────────────────────────────────────────────────────
+# Apply fmt → clippy --fix → fmt again so the push is always clean.
+# If anything changed the last commit is silently amended.
+
+printf "  %-8s " "auto-fix"
+
+# Don't auto-fix during merge / rebase — would corrupt the operation
+GIT_DIR=$(git rev-parse --git-dir 2>/dev/null || true)
+IN_SPECIAL_STATE=0
+[[ -f "$GIT_DIR/MERGE_HEAD"  ]] && IN_SPECIAL_STATE=1
+[[ -f "$GIT_DIR/REBASE_HEAD" ]] && IN_SPECIAL_STATE=1
+[[ -f "$GIT_DIR/CHERRY_PICK_HEAD" ]] && IN_SPECIAL_STATE=1
+
+if [[ $IN_SPECIAL_STATE -eq 0 ]]; then
+    cargo fmt --all                                          2>/dev/null || true
+    cargo clippy --fix --workspace --allow-dirty --quiet    2>/dev/null || true
+    cargo fmt --all                                          2>/dev/null || true
+
+    if ! git diff --quiet; then
+        git add -A
+        git commit --amend --no-edit --quiet
+        echo -e "${YLW}↑${RST}  ${DIM}(fmt + clippy --fix applied, commit amended)${RST}"
+    else
+        echo -e "$PASS"
+    fi
+else
+    echo -e "${DIM}skipped (merge/rebase in progress)${RST}"
+fi
+
+echo ""
+
+# ── Phase 2: Strict gate ──────────────────────────────────────────────────────
+# Verify the auto-fixed code is actually clean before pushing.
+
 run_step "fmt"    cargo fmt --all -- --check
 run_step "check"  cargo check --workspace --all-targets --quiet
 run_step "clippy" cargo clippy --workspace --all-targets --quiet -- -D warnings
 run_step "wasm"   cargo build -p docs --target wasm32-unknown-unknown --quiet
 
 # ── Result ────────────────────────────────────────────────────────────────────
+echo ""
 echo "  ${DIM}────────────────────────────────${RST}"
 if [[ $fail -eq 0 ]]; then
     echo -e "  ${GRN}${BLD}All checks passed${RST}  ${DIM}→ pushing${RST}"
@@ -73,8 +92,6 @@ if [[ $fail -eq 0 ]]; then
     exit 0
 else
     echo -e "  ${RED}${BLD}Push blocked${RST}  ${DIM}fix the issues above and re-push${RST}"
-    echo ""
-    echo -e "  ${DIM}Tip: run ${RST}${YLW}cargo clippy --fix --workspace --allow-dirty${RST}${DIM} for auto-fixes${RST}"
     echo ""
     exit 1
 fi

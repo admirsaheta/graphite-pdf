@@ -80,14 +80,16 @@ jobs:
       - run: cargo build -p docs --target wasm32-unknown-unknown
 
   # ── MSRV ────────────────────────────────────────────────────────────────────
+  # 1.88 is the effective minimum: mathjax-svg-rs=0.4.0 pulls in boa_engine
+  # 0.21.1 which requires 1.88. The workspace rust-version is set accordingly.
   msrv:
-    name: MSRV (1.85)
+    name: MSRV (1.88)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: "1.85"
+          toolchain: "1.88"
       - uses: Swatinem/rust-cache@v2
         with:
           key: msrv

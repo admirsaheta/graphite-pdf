@@ -109,7 +109,7 @@ categories = [
 license-file = "LICENSE"
 repository = "https://github.com/admirsaheta/graphitepdf"
 edition = "2024"
-rust-version = "1.85"
+rust-version = "1.88"
 
 [workspace.dependencies.graphitepdf-document]
 version = "0.1.0"

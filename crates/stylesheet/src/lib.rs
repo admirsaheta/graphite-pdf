@@ -209,10 +209,10 @@ pub fn resolve_media_queries(container: &Container, style: &Style) -> Style {
 
     for (key, value) in style {
         if key.starts_with("@media") {
-            if matches_media_query(container, key) {
-                if let StyleValue::Object(media_style) = value {
-                    merge_style(&mut resolved, media_style.clone());
-                }
+            if matches_media_query(container, key)
+                && let StyleValue::Object(media_style) = value
+            {
+                merge_style(&mut resolved, media_style.clone());
             }
         } else {
             resolved.insert(key.clone(), value.clone());

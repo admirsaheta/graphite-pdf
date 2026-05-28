@@ -1,0 +1,76 @@
+name: Docs
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "docs/**"
+      - ".github/workflows/docs.yml"
+
+  # Also callable from the release workflow after a publish
+  workflow_call:
+
+concurrency:
+  group: docs-deploy
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: docs-build
+
+      # Install wasm-bindgen-cli matching the version compiled into the WASM
+      - name: Install wasm-bindgen-cli
+        run: |
+          VERSION=$(cargo metadata --format-version 1 --no-deps \
+            | jq -r '.packages[] | select(.name=="wasm-bindgen") | .version' \
+            | head -1)
+          cargo install wasm-bindgen-cli --version "$VERSION" --locked
+
+      # Install trunk via prebuilt binary for speed
+      - name: Install trunk
+        run: |
+          curl -L --proto '=https' --tlsv1.2 -sSf \
+            "https://github.com/trunk-rs/trunk/releases/latest/download/trunk-x86_64-unknown-linux-gnu.tar.gz" \
+            | tar xvzf - trunk
+          sudo mv trunk /usr/local/bin/trunk
+
+      - name: Build docs
+        working-directory: docs
+        run: |
+          trunk build --release --public-url /graphitepdf/
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/dist
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4

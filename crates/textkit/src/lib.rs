@@ -1056,57 +1056,57 @@ impl TextEngine {
                 }
 
                 let available_width = container.rect().width.value() - current_width;
-                if token.width.value() > available_width && !token.is_whitespace {
-                    if let Some((head, tail)) =
+                if token.width.value() > available_width
+                    && !token.is_whitespace
+                    && let Some((head, tail)) =
                         self.split_token_to_fit(run, &token, available_width, font_store)
-                    {
-                        pending.push(head);
-                        let line = finalize_line(
-                            &pending,
-                            container.rect(),
-                            current_y,
-                            self.config.justification,
-                            false,
-                        );
-                        if line.rect().bottom().value() > bottom {
-                            overflowed = true;
-                            break 'layout;
-                        }
-                        current_y = line.rect().bottom().value();
-                        lines.push(line);
-                        pending.clear();
-                        current_width = 0.0;
+                {
+                    pending.push(head);
+                    let line = finalize_line(
+                        &pending,
+                        container.rect(),
+                        current_y,
+                        self.config.justification,
+                        false,
+                    );
+                    if line.rect().bottom().value() > bottom {
+                        overflowed = true;
+                        break 'layout;
+                    }
+                    current_y = line.rect().bottom().value();
+                    lines.push(line);
+                    pending.clear();
+                    current_width = 0.0;
 
-                        if let Some(tail) = tail {
-                            let remainder = vec![tail];
-                            for fragment in remainder {
-                                if fragment.width.value() > container.rect().width.value()
-                                    && !fragment.is_whitespace
-                                {
-                                    pending.push(fragment);
-                                    let line = finalize_line(
-                                        &pending,
-                                        container.rect(),
-                                        current_y,
-                                        self.config.justification,
-                                        false,
-                                    );
-                                    if line.rect().bottom().value() > bottom {
-                                        overflowed = true;
-                                        break 'layout;
-                                    }
-                                    current_y = line.rect().bottom().value();
-                                    lines.push(line);
-                                    pending.clear();
-                                    current_width = 0.0;
-                                } else {
-                                    current_width += fragment.width.value();
-                                    pending.push(fragment);
+                    if let Some(tail) = tail {
+                        let remainder = vec![tail];
+                        for fragment in remainder {
+                            if fragment.width.value() > container.rect().width.value()
+                                && !fragment.is_whitespace
+                            {
+                                pending.push(fragment);
+                                let line = finalize_line(
+                                    &pending,
+                                    container.rect(),
+                                    current_y,
+                                    self.config.justification,
+                                    false,
+                                );
+                                if line.rect().bottom().value() > bottom {
+                                    overflowed = true;
+                                    break 'layout;
                                 }
+                                current_y = line.rect().bottom().value();
+                                lines.push(line);
+                                pending.clear();
+                                current_width = 0.0;
+                            } else {
+                                current_width += fragment.width.value();
+                                pending.push(fragment);
                             }
                         }
-                        continue;
                     }
+                    continue;
                 }
 
                 current_width += token.width.value();
@@ -1129,11 +1129,11 @@ impl TextEngine {
             }
         }
 
-        if let Some(max_lines) = container.max_lines() {
-            if lines.len() > max_lines {
-                lines.truncate(max_lines);
-                overflowed = true;
-            }
+        if let Some(max_lines) = container.max_lines()
+            && lines.len() > max_lines
+        {
+            lines.truncate(max_lines);
+            overflowed = true;
         }
 
         let max_width = lines

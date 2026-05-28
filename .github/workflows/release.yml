@@ -1,44 +1,37 @@
 name: Release
 
-# Fires automatically on every push to main that passes CI (the pre-push hook
-# guarantees the build is green before the push even reaches GitHub).
-# The release commit itself includes [skip ci] so it doesn't re-trigger this.
 on:
-  push:
-    branches: [master]
-    paths-ignore:
-      - "docs/**"
-      - "**.md"
-      - ".githooks/**"
-
-  # Manual escape hatch — choose the bump level explicitly
   workflow_dispatch:
     inputs:
       bump:
-        description: "Version bump level"
+        description: "Version bump"
         required: true
         default: minor
         type: choice
         options: [patch, minor, major]
       dry_run:
-        description: "Dry run (no publish, no push)"
+        description: "Dry run — skip publish, push, and deploy"
         required: false
         default: "false"
         type: boolean
 
 concurrency:
   group: release
-  cancel-in-progress: false      # never cancel a running release mid-publish
+  cancel-in-progress: false
 
 env:
   CARGO_TERM_COLOR: always
   CARGO_INCREMENTAL: 0
   RUST_BACKTRACE: short
-  BUMP: ${{ github.event.inputs.bump || 'minor' }}
-  DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+
+# ── Publish order: leaves first, facade last ──────────────────────────────────
+# errors → primitives → utils → svg → stylesheet → font → math → textkit →
+# image → kit → layout → render → renderer → style → document → graphitepdf
 
 jobs:
-  # ── Gate: full CI must be green ─────────────────────────────────────────────
+  # ═══════════════════════════════════════════════════════════════════════════
+  # 1. GATE — full CI before we touch anything
+  # ═══════════════════════════════════════════════════════════════════════════
   gate:
     name: CI gate
     runs-on: ubuntu-latest
@@ -55,40 +48,37 @@ jobs:
       - run: cargo test --workspace --lib --bins
       - run: cargo build -p docs --target wasm32-unknown-unknown
 
-  # ── Release ──────────────────────────────────────────────────────────────────
-  release:
-    name: Publish
+  # ═══════════════════════════════════════════════════════════════════════════
+  # 2. PUBLISH — bump, changelog, crates.io, GitHub release
+  # ═══════════════════════════════════════════════════════════════════════════
+  publish:
+    name: Publish & Release
     needs: gate
     runs-on: ubuntu-latest
     permissions:
-      contents: write    # push version-bump commit + tag
-      packages: write    # create GitHub Release
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0                        # full history for git-cliff
-          token: ${{ secrets.RELEASE_TOKEN }}   # PAT with repo scope for push
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_TOKEN }}
 
       - uses: dtolnay/rust-toolchain@stable
-
       - uses: Swatinem/rust-cache@v2
 
-      # ── Install tools ───────────────────────────────────────────────────────
-      - name: Install cargo-release
-        run: cargo install cargo-release --locked
-
+      # ── Tools ───────────────────────────────────────────────────────────────
       - name: Install git-cliff
         run: cargo install git-cliff --locked
 
-      # ── Configure git identity ──────────────────────────────────────────────
+      # ── Git identity ────────────────────────────────────────────────────────
       - name: Configure git
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      # ── Determine next version ──────────────────────────────────────────────
-      - name: Compute next version
+      # ── Compute next version ────────────────────────────────────────────────
+      - name: Compute version
         id: ver
         run: |
           CURRENT=$(cargo metadata --no-deps --format-version 1 \
@@ -96,7 +86,7 @@ jobs:
           MAJOR=$(echo "$CURRENT" | cut -d. -f1)
           MINOR=$(echo "$CURRENT" | cut -d. -f2)
           PATCH=$(echo "$CURRENT" | cut -d. -f3 | sed 's/-.*//')
-          case "${{ env.BUMP }}" in
+          case "${{ inputs.bump }}" in
             major) NEXT="$((MAJOR+1)).0.0" ;;
             minor) NEXT="${MAJOR}.$((MINOR+1)).0" ;;
             patch) NEXT="${MAJOR}.${MINOR}.$((PATCH+1))" ;;
@@ -104,17 +94,26 @@ jobs:
           echo "current=$CURRENT" >> "$GITHUB_OUTPUT"
           echo "next=$NEXT"       >> "$GITHUB_OUTPUT"
           echo "tag=v$NEXT"       >> "$GITHUB_OUTPUT"
+          echo "Bumping $CURRENT → $NEXT"
+
+      # ── Update workspace version ────────────────────────────────────────────
+      - name: Bump workspace version
+        if: inputs.dry_run == false
+        run: |
+          sed -i 's/^version = ".*"/version = "${{ steps.ver.outputs.next }}"/' Cargo.toml
+          cargo check -p graphitepdf --quiet   # refresh Cargo.lock
 
       # ── Generate CHANGELOG ──────────────────────────────────────────────────
       - name: Generate CHANGELOG
         run: |
           git cliff --tag "${{ steps.ver.outputs.tag }}" --output CHANGELOG.md
-          echo "--- CHANGELOG preview ---"
-          head -60 CHANGELOG.md
+          echo "::group::CHANGELOG preview"
+          head -80 CHANGELOG.md
+          echo "::endgroup::"
 
-      # ── Publish workspace crates in dependency order ─────────────────────────
+      # ── Publish all crates to crates.io ────────────────────────────────────
       - name: Publish crates
-        if: env.DRY_RUN == 'false'
+        if: inputs.dry_run == false
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
         run: |
@@ -136,66 +135,53 @@ jobs:
             graphitepdf-document
             graphitepdf
           )
-
-          VERSION="${{ steps.ver.outputs.next }}"
-
           for crate in "${CRATES[@]}"; do
-            echo "::group::Publishing $crate @ $VERSION"
-            cargo release publish \
-              --package "$crate" \
-              --no-confirm \
-              --execute
+            echo "::group::$crate @ ${{ steps.ver.outputs.next }}"
+            cargo publish --package "$crate" --no-verify --allow-dirty
             echo "::endgroup::"
-            # Give crates.io index time to pick up the new version
-            # before the next crate (which may depend on it) is published
-            sleep 25
+            sleep 25    # wait for crates.io index propagation
           done
 
-      - name: Dry-run publish check
-        if: env.DRY_RUN == 'true'
-        env:
-          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+      - name: Dry-run summary
+        if: inputs.dry_run == true
         run: |
-          echo "DRY RUN — would publish these crates @ ${{ steps.ver.outputs.next }}:"
-          echo "  graphitepdf-errors → graphitepdf-primitives → graphitepdf-utils"
-          echo "  → graphitepdf-svg → graphitepdf-stylesheet → graphitepdf-font"
-          echo "  → graphitepdf-math → graphitepdf-textkit → graphitepdf-image"
-          echo "  → graphitepdf-kit → graphitepdf-layout → graphitepdf-render"
-          echo "  → graphitepdf-renderer → graphitepdf-style → graphitepdf-document"
-          echo "  → graphitepdf (facade)"
+          echo "### Dry run — nothing published or pushed" >> "$GITHUB_STEP_SUMMARY"
+          echo "Would publish: **${{ steps.ver.outputs.current }} → ${{ steps.ver.outputs.next }}**" >> "$GITHUB_STEP_SUMMARY"
+          echo "Crates (in order): errors → primitives → utils → svg → stylesheet → font → math → textkit → image → kit → layout → render → renderer → style → document → graphitepdf" >> "$GITHUB_STEP_SUMMARY"
 
-      # ── Bump workspace version, commit, tag, push ───────────────────────────
-      - name: Bump version + commit + tag
-        if: env.DRY_RUN == 'false'
+      # ── Commit, tag, push ────────────────────────────────────────────────────
+      - name: Commit + tag + push
+        if: inputs.dry_run == false
         run: |
-          VERSION="${{ steps.ver.outputs.next }}"
           TAG="${{ steps.ver.outputs.tag }}"
-
-          # Update [workspace.package].version in the root Cargo.toml
-          sed -i "s/^version = \".*\"/version = \"$VERSION\"/" Cargo.toml
-
-          # Stage everything
           git add Cargo.toml Cargo.lock CHANGELOG.md
-
-          # Commit with [skip ci] so this push doesn't re-trigger the workflow
-          git commit -m "chore(release): v${VERSION} [skip ci]"
-
-          # Lightweight tag pointing at the bump commit
+          git commit -m "chore(release): $TAG [skip ci]"
           git tag -a "$TAG" -m "GraphitePDF $TAG"
-
-          # Push commit + tag
-          git push origin main
+          git push origin master
           git push origin "$TAG"
 
-      # ── Create GitHub Release ────────────────────────────────────────────────
-      - name: GitHub Release
-        if: env.DRY_RUN == 'false'
+      # ── GitHub Release ───────────────────────────────────────────────────────
+      - name: Create GitHub Release
+        if: inputs.dry_run == false
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.ver.outputs.tag }}
-          name: "GraphitePDF ${{ steps.ver.outputs.tag }}"
-          body_path: CHANGELOG.md
-          draft: false
+          tag_name:   ${{ steps.ver.outputs.tag }}
+          name:       "GraphitePDF ${{ steps.ver.outputs.tag }}"
+          body_path:  CHANGELOG.md
+          draft:      false
           prerelease: ${{ contains(steps.ver.outputs.next, 'alpha') || contains(steps.ver.outputs.next, 'beta') || contains(steps.ver.outputs.next, 'rc') }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # 3. DOCS — rebuild and deploy to GitHub Pages after a successful publish
+  # ═══════════════════════════════════════════════════════════════════════════
+  docs:
+    name: Deploy docs
+    needs: publish
+    if: inputs.dry_run == false
+    uses: ./.github/workflows/docs.yml
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
