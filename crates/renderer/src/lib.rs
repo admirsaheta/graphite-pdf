@@ -9,8 +9,8 @@ mod tests {
     use super::*;
 
     use graphitepdf_font::{FontDescriptor, FontSource, StandardFont};
-    use graphitepdf_layout::{Document, LayoutStyle, Node, Page};
     use graphitepdf_layout::LayoutMetadata;
+    use graphitepdf_layout::{Document, LayoutStyle, Node, Page};
     use graphitepdf_primitives::{Bounds, Color, Pt, Size};
     use std::io::Cursor;
 
@@ -68,8 +68,16 @@ mod tests {
         let bytes = render_to_bytes(&document).expect("render document should serialize");
 
         assert!(bytes.starts_with(b"%PDF-1.7"));
-        assert!(bytes.windows(b"/Type /Page".len()).any(|window| window == b"/Type /Page"));
-        assert!(bytes.windows(b"%%EOF".len()).any(|window| window == b"%%EOF"));
+        assert!(
+            bytes
+                .windows(b"/Type /Page".len())
+                .any(|window| window == b"/Type /Page")
+        );
+        assert!(
+            bytes
+                .windows(b"%%EOF".len())
+                .any(|window| window == b"%%EOF")
+        );
     }
 
     #[test]
@@ -82,8 +90,13 @@ mod tests {
         );
         let mut session = RendererSession::new(document);
 
-        let first_revision = session.render_snapshot().expect("initial render should succeed").revision();
-        let first_bytes = session.to_bytes().expect("session should produce pdf bytes");
+        let first_revision = session
+            .render_snapshot()
+            .expect("initial render should succeed")
+            .revision();
+        let first_bytes = session
+            .to_bytes()
+            .expect("session should produce pdf bytes");
 
         assert_eq!(first_revision, 0);
         assert_eq!(
@@ -98,13 +111,17 @@ mod tests {
             document.add_page(Page::new([Node::box_node()]).with_size(Size::new(200.0, 120.0)));
         });
         let (updated_snapshot_revision, updated_page_count) = {
-            let updated_snapshot = session.render_snapshot().expect("updated render should succeed");
+            let updated_snapshot = session
+                .render_snapshot()
+                .expect("updated render should succeed");
             (
                 updated_snapshot.revision(),
                 updated_snapshot.document().pages.len(),
             )
         };
-        let updated_bytes = session.to_bytes().expect("updated session should serialize");
+        let updated_bytes = session
+            .to_bytes()
+            .expect("updated session should serialize");
 
         assert_eq!(updated_revision, 1);
         assert_eq!(updated_snapshot_revision, 1);

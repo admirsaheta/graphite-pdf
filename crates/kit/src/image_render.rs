@@ -104,7 +104,11 @@ fn render_raster_to_page_content(
     Ok(content.into_bytes())
 }
 
-fn resolve_size(natural_width: f64, natural_height: f64, options: &ImageRenderOptions) -> Result<(f64, f64)> {
+fn resolve_size(
+    natural_width: f64,
+    natural_height: f64,
+    options: &ImageRenderOptions,
+) -> Result<(f64, f64)> {
     if natural_width <= 0.0 || natural_height <= 0.0 {
         return Err(GraphitePdfKitError::ImageError(
             "image dimensions must be positive".to_string(),
@@ -157,16 +161,16 @@ fn decode_raster_image(_raster: &RasterImage) -> Result<DecodedRaster> {
 fn decode_png(raster: &RasterImage) -> Result<DecodedRaster> {
     let mut decoder = png::Decoder::new(Cursor::new(&raster.data));
     decoder.set_transformations(png::Transformations::EXPAND | png::Transformations::STRIP_16);
-    let mut reader = decoder
-        .read_info()
-        .map_err(|error| GraphitePdfKitError::ImageError(format!("failed to decode PNG: {error}")))?;
+    let mut reader = decoder.read_info().map_err(|error| {
+        GraphitePdfKitError::ImageError(format!("failed to decode PNG: {error}"))
+    })?;
     let output_size = reader.output_buffer_size().ok_or_else(|| {
         GraphitePdfKitError::ImageError("PNG decoder did not report an output size".to_string())
     })?;
     let mut buffer = vec![0; output_size];
-    let info = reader
-        .next_frame(&mut buffer)
-        .map_err(|error| GraphitePdfKitError::ImageError(format!("failed to read PNG frame: {error}")))?;
+    let info = reader.next_frame(&mut buffer).map_err(|error| {
+        GraphitePdfKitError::ImageError(format!("failed to read PNG frame: {error}"))
+    })?;
     let data = &buffer[..info.buffer_size()];
 
     let rgb = match info.color_type {
@@ -175,7 +179,10 @@ fn decode_png(raster: &RasterImage) -> Result<DecodedRaster> {
             .chunks_exact(4)
             .flat_map(|chunk| [chunk[0], chunk[1], chunk[2]])
             .collect(),
-        png::ColorType::Grayscale => data.iter().flat_map(|value| [*value, *value, *value]).collect(),
+        png::ColorType::Grayscale => data
+            .iter()
+            .flat_map(|value| [*value, *value, *value])
+            .collect(),
         png::ColorType::GrayscaleAlpha => data
             .chunks_exact(2)
             .flat_map(|chunk| [chunk[0], chunk[0], chunk[0]])
@@ -183,7 +190,7 @@ fn decode_png(raster: &RasterImage) -> Result<DecodedRaster> {
         other => {
             return Err(GraphitePdfKitError::ImageError(format!(
                 "unsupported PNG color type {other:?}"
-            )))
+            )));
         }
     };
 
@@ -198,15 +205,18 @@ fn decode_png(raster: &RasterImage) -> Result<DecodedRaster> {
 #[cfg(feature = "images")]
 fn decode_jpeg(raster: &RasterImage) -> Result<DecodedRaster> {
     let mut decoder = jpeg_decoder::Decoder::new(Cursor::new(&raster.data));
-    let pixels = decoder
-        .decode()
-        .map_err(|error| GraphitePdfKitError::ImageError(format!("failed to decode JPEG: {error}")))?;
+    let pixels = decoder.decode().map_err(|error| {
+        GraphitePdfKitError::ImageError(format!("failed to decode JPEG: {error}"))
+    })?;
     let info = decoder.info().ok_or_else(|| {
         GraphitePdfKitError::ImageError("JPEG decoder did not return image info".to_string())
     })?;
 
     let rgb = match info.pixel_format {
-        jpeg_decoder::PixelFormat::L8 => pixels.iter().flat_map(|value| [*value, *value, *value]).collect(),
+        jpeg_decoder::PixelFormat::L8 => pixels
+            .iter()
+            .flat_map(|value| [*value, *value, *value])
+            .collect(),
         jpeg_decoder::PixelFormat::RGB24 => pixels,
         jpeg_decoder::PixelFormat::CMYK32 => pixels
             .chunks_exact(4)
@@ -215,7 +225,7 @@ fn decode_jpeg(raster: &RasterImage) -> Result<DecodedRaster> {
         other => {
             return Err(GraphitePdfKitError::ImageError(format!(
                 "unsupported JPEG pixel format {other:?}"
-            )))
+            )));
         }
     };
 

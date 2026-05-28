@@ -1,6 +1,6 @@
+use crate::router::Route;
 use yew::prelude::*;
 use yew_router::prelude::*;
-use crate::router::Route;
 
 #[component]
 pub fn HomePage() -> Html {
@@ -118,16 +118,52 @@ pub fn HomePage() -> Html {
 }
 
 const FEATURES: &[(&str, &str, &str)] = &[
-    ("⬡", "Pure Rust",         "No C bindings. No unsafe FFI. Built ground-up for safety and portability."),
-    ("◈", "Modular crates",    "Use only what you need. Each layer of the stack is independently versioned."),
-    ("◎", "Layout engine",     "Box model layout with flex-like flow, precise block/inline composition."),
-    ("◇", "Text pipeline",     "Font loading, shaping, glyph metrics, and full text layout via textkit."),
-    ("▣", "Style system",      "CSS-influenced cascade with strict specificity and stylesheet resolution."),
-    ("◐", "Render pipeline",   "Page rendering and PDF assembly with zero-copy output where possible."),
+    (
+        "⬡",
+        "Pure Rust",
+        "No C bindings. No unsafe FFI. Built ground-up for safety and portability.",
+    ),
+    (
+        "◈",
+        "Modular crates",
+        "Use only what you need. Each layer of the stack is independently versioned.",
+    ),
+    (
+        "◎",
+        "Layout engine",
+        "Box model layout with flex-like flow, precise block/inline composition.",
+    ),
+    (
+        "◇",
+        "Text pipeline",
+        "Font loading, shaping, glyph metrics, and full text layout via textkit.",
+    ),
+    (
+        "▣",
+        "Style system",
+        "CSS-influenced cascade with strict specificity and stylesheet resolution.",
+    ),
+    (
+        "◐",
+        "Render pipeline",
+        "Page rendering and PDF assembly with zero-copy output where possible.",
+    ),
 ];
 
 const CRATES: &[&str] = &[
-    "document", "errors", "font", "image", "kit", "layout",
-    "math", "primitives", "render", "renderer", "style",
-    "stylesheet", "svg", "textkit", "utils",
+    "document",
+    "errors",
+    "font",
+    "image",
+    "kit",
+    "layout",
+    "math",
+    "primitives",
+    "render",
+    "renderer",
+    "style",
+    "stylesheet",
+    "svg",
+    "textkit",
+    "utils",
 ];

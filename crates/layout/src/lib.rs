@@ -437,11 +437,23 @@ pub struct SafeLayoutStyle {
 pub enum SafeNodeKind {
     View,
     Box,
-    Text { block: TextBlock, layout: TextLayout },
-    ImageAsset { asset: Image },
-    ImageSource { source: AssetImageSource },
-    Svg { svg: SvgNode },
-    Math { source: String, svg: SvgNode },
+    Text {
+        block: TextBlock,
+        layout: TextLayout,
+    },
+    ImageAsset {
+        asset: Image,
+    },
+    ImageSource {
+        source: AssetImageSource,
+    },
+    Svg {
+        svg: SvgNode,
+    },
+    Math {
+        source: String,
+        svg: SvgNode,
+    },
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -608,7 +620,8 @@ impl LayoutEngine {
 
         let available_width = (size.width - page_style.padding.horizontal()).max(0.0);
         let available_height = (size.height - page_style.padding.vertical()).max(0.0);
-        let child_container = StylesheetContainer::new(available_width as f64, available_height as f64);
+        let child_container =
+            StylesheetContainer::new(available_width as f64, available_height as f64);
 
         let mut measured = Vec::with_capacity(page.nodes().len());
         for node in page.nodes() {
@@ -664,7 +677,9 @@ impl LayoutEngine {
             NodeKind::Box => self.measure_box(style, width),
             NodeKind::Text(block) => self.measure_text(block, style, width, available_height)?,
             NodeKind::ImageAsset(asset) => self.measure_image_asset(asset.clone(), style, width)?,
-            NodeKind::ImageSource(source) => self.measure_image_source(source.clone(), style, width)?,
+            NodeKind::ImageSource(source) => {
+                self.measure_image_source(source.clone(), style, width)?
+            }
             NodeKind::Svg(svg) => self.measure_svg(svg.clone(), style, width)?,
             NodeKind::Math(fragment) => self.measure_math(fragment, style, width)?,
         };
@@ -796,9 +811,13 @@ impl LayoutEngine {
         width: f32,
     ) -> Result<MeasuredNode> {
         let resolved_width = style.width.map(Pt::value).unwrap_or(width);
-        let resolved_height = style.height.map(Pt::value).ok_or(Error::UnresolvedAssetDimensions {
-            kind: "image source",
-        })?;
+        let resolved_height =
+            style
+                .height
+                .map(Pt::value)
+                .ok_or(Error::UnresolvedAssetDimensions {
+                    kind: "image source",
+                })?;
 
         Ok(MeasuredNode {
             kind: SafeNodeKind::ImageSource { source },
@@ -808,7 +827,12 @@ impl LayoutEngine {
         })
     }
 
-    fn measure_svg(&self, svg: SvgNode, style: SafeLayoutStyle, width: f32) -> Result<MeasuredNode> {
+    fn measure_svg(
+        &self,
+        svg: SvgNode,
+        style: SafeLayoutStyle,
+        width: f32,
+    ) -> Result<MeasuredNode> {
         let natural = resolve_svg_size(&svg)?;
         let size = resolve_replaced_size(
             natural,
@@ -1333,9 +1357,10 @@ fn resolve_replaced_size(
             let ratio = aspect_ratio.ok_or(Error::InvalidNaturalDimensions { kind })?;
             Ok(Size::new(height * ratio, height))
         }
-        (None, None) if natural_width > 0.0 && natural_height > 0.0 => {
-            Ok(Size::new(natural_width.min(fallback_width).max(0.0), natural_height))
-        }
+        (None, None) if natural_width > 0.0 && natural_height > 0.0 => Ok(Size::new(
+            natural_width.min(fallback_width).max(0.0),
+            natural_height,
+        )),
         (None, None) => Err(Error::InvalidNaturalDimensions { kind }),
     }
 }
@@ -1593,9 +1618,9 @@ mod tests {
             format: ImageFormat::Png,
             key: None,
         });
-        let page = Page::new([Node::image_asset(image).with_style(
-            LayoutStyle::new().with_width(Pt::new(50.0)),
-        )])
+        let page = Page::new([
+            Node::image_asset(image).with_style(LayoutStyle::new().with_width(Pt::new(50.0)))
+        ])
         .with_size(Size::new(200.0, 200.0));
 
         let layout = LayoutEngine::new()

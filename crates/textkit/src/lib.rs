@@ -831,7 +831,12 @@ impl TextEngine {
         for run in attributed.canonical_runs()? {
             match self.config.script_itemization {
                 ScriptItemization::None => {
-                    resolved.push(self.build_text_run(run.range, run.text, run.attributes, font_store)?);
+                    resolved.push(self.build_text_run(
+                        run.range,
+                        run.text,
+                        run.attributes,
+                        font_store,
+                    )?);
                 }
                 ScriptItemization::Heuristic => {
                     for item in self.itemize_run(run.range, &run.text, &run.attributes) {
@@ -912,7 +917,10 @@ impl TextEngine {
                 );
             }
             FontSubstitution::BestEffort => {
-                fallbacks.push(harmonize_descriptor(self.config.default_font.clone(), &requested));
+                fallbacks.push(harmonize_descriptor(
+                    self.config.default_font.clone(),
+                    &requested,
+                ));
                 fallbacks.push(harmonize_descriptor(
                     FontDescriptor::new(StandardFont::Helvetica.family_name()),
                     &requested,
@@ -956,9 +964,8 @@ impl TextEngine {
         let mut items = Vec::new();
         let mut chunk_start = 0;
         let mut current_script = Script::Common;
-        let mut current_direction = explicit_direction.unwrap_or_else(|| {
-            resolve_direction(None, self.config.bidi, text)
-        });
+        let mut current_direction =
+            explicit_direction.unwrap_or_else(|| resolve_direction(None, self.config.bidi, text));
 
         for (offset, character) in text.char_indices() {
             let script = detect_script(character);
@@ -967,8 +974,9 @@ impl TextEngine {
                     .unwrap_or_else(|| resolve_direction(None, self.config.bidi, text))
             });
 
-            let script_changed =
-                current_script != Script::Common && script != Script::Common && script != current_script;
+            let script_changed = current_script != Script::Common
+                && script != Script::Common
+                && script != current_script;
             let direction_changed = direction != current_direction
                 && direction_for_char(character).is_some()
                 && has_strong_direction(&text[chunk_start..offset]);
@@ -1166,7 +1174,8 @@ impl TextEngine {
             return None;
         }
 
-        if let Some((head, tail)) = self.try_hyphenate_token(run, token, available_width, font_store)
+        if let Some((head, tail)) =
+            self.try_hyphenate_token(run, token, available_width, font_store)
         {
             return Some((head, Some(tail)));
         }
@@ -1399,13 +1408,7 @@ enum TokenKind {
     Newline,
 }
 
-fn push_token(
-    tokens: &mut Vec<Token>,
-    run: &TextRun,
-    start: usize,
-    end: usize,
-    kind: TokenKind,
-) {
+fn push_token(tokens: &mut Vec<Token>, run: &TextRun, start: usize, end: usize, kind: TokenKind) {
     let text = run.text[start..end].to_string();
     tokens.push(Token {
         range: TextRange::new(run.range.start() + start, run.range.start() + end),
@@ -1475,7 +1478,10 @@ fn finalize_line(
     justification: Justification,
     is_last_line: bool,
 ) -> LineFragment {
-    let natural_width = pending.iter().map(|fragment| fragment.width.value()).sum::<f32>();
+    let natural_width = pending
+        .iter()
+        .map(|fragment| fragment.width.value())
+        .sum::<f32>();
     let max_font_size = pending
         .iter()
         .map(|fragment| fragment.font_size.value())
@@ -1492,8 +1498,12 @@ fn finalize_line(
         .map(|fragment| fragment.direction)
         .unwrap_or(TextDirection::Ltr);
     let available_width = container.width.value();
-    let whitespace_slots = pending.iter().filter(|fragment| fragment.is_whitespace).count();
-    let justify_fully = justification == Justification::Full && !is_last_line && whitespace_slots > 0;
+    let whitespace_slots = pending
+        .iter()
+        .filter(|fragment| fragment.is_whitespace)
+        .count();
+    let justify_fully =
+        justification == Justification::Full && !is_last_line && whitespace_slots > 0;
     let extra_per_whitespace = if justify_fully && available_width > natural_width {
         (available_width - natural_width) / whitespace_slots as f32
     } else {
@@ -1551,12 +1561,7 @@ fn finalize_line(
     }
 
     LineFragment {
-        rect: TextRect::from_values(
-            container.x.value(),
-            line_y,
-            line_width,
-            line_height,
-        ),
+        rect: TextRect::from_values(container.x.value(), line_y, line_width, line_height),
         baseline: Pt::new(baseline),
         direction,
         justification,
@@ -1604,11 +1609,7 @@ fn glyph_advance(character: char, font_size: Pt) -> f32 {
     font_size.value() * multiplier
 }
 
-fn resolve_direction(
-    explicit: Option<TextDirection>,
-    bidi: BidiMode,
-    text: &str,
-) -> TextDirection {
+fn resolve_direction(explicit: Option<TextDirection>, bidi: BidiMode, text: &str) -> TextDirection {
     if let Some(direction) = explicit {
         return direction;
     }
@@ -1624,7 +1625,8 @@ fn resolve_direction(
 }
 
 fn has_strong_direction(text: &str) -> bool {
-    text.chars().any(|character| direction_for_char(character).is_some())
+    text.chars()
+        .any(|character| direction_for_char(character).is_some())
 }
 
 fn direction_for_char(character: char) -> Option<TextDirection> {
@@ -1647,7 +1649,10 @@ fn detect_script(character: char) -> Script {
 
     if character.is_ascii_alphabetic() {
         Script::Latin
-    } else if character.is_whitespace() || character.is_ascii_punctuation() || character.is_ascii_digit() {
+    } else if character.is_whitespace()
+        || character.is_ascii_punctuation()
+        || character.is_ascii_digit()
+    {
         Script::Common
     } else if (0x0600..=0x06ff).contains(&code)
         || (0x0750..=0x077f).contains(&code)
@@ -1731,11 +1736,18 @@ mod tests {
 
         assert!(layout.runs().len() >= 2);
         assert_eq!(layout.runs()[0].script(), Script::Latin);
-        assert!(layout.runs().iter().any(|run| run.script() == Script::Arabic));
-        assert!(layout
-            .runs()
-            .iter()
-            .all(|run| run.resolved_font().family() == "Helvetica"));
+        assert!(
+            layout
+                .runs()
+                .iter()
+                .any(|run| run.script() == Script::Arabic)
+        );
+        assert!(
+            layout
+                .runs()
+                .iter()
+                .all(|run| run.resolved_font().family() == "Helvetica")
+        );
     }
 
     #[test]
@@ -1804,10 +1816,12 @@ mod tests {
 
         assert!(layout.lines().len() >= 2);
         assert_eq!(layout.lines()[0].rect().width.value(), 75.0);
-        assert!(layout.lines()[0]
-            .fragments()
-            .iter()
-            .all(|fragment| !fragment.decorations().is_empty()));
+        assert!(
+            layout.lines()[0]
+                .fragments()
+                .iter()
+                .all(|fragment| !fragment.decorations().is_empty())
+        );
     }
 
     #[test]
@@ -1835,6 +1849,8 @@ mod tests {
         let first_line = &layout.lines()[0];
 
         assert_eq!(first_line.direction(), TextDirection::Rtl);
-        assert!(first_line.fragments()[0].rect().x.value() > first_line.fragments()[2].rect().x.value());
+        assert!(
+            first_line.fragments()[0].rect().x.value() > first_line.fragments()[2].rect().x.value()
+        );
     }
 }

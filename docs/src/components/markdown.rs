@@ -1,4 +1,4 @@
-use pulldown_cmark::{html as cmark_html, Options, Parser};
+use pulldown_cmark::{Options, Parser, html as cmark_html};
 use wasm_bindgen::JsCast;
 use web_sys::Element;
 use yew::prelude::*;
@@ -60,15 +60,19 @@ fn add_heading_ids(container: &Element) {
 }
 
 fn highlight_code() {
-    let _ = js_sys::eval(
-        "if(window.hljs){window.hljs.highlightAll();}"
-    );
+    let _ = js_sys::eval("if(window.hljs){window.hljs.highlightAll();}");
 }
 
 fn slugify(text: &str) -> String {
     text.to_lowercase()
         .chars()
-        .map(|c| if c.is_alphanumeric() || c == '-' { c } else { '-' })
+        .map(|c| {
+            if c.is_alphanumeric() || c == '-' {
+                c
+            } else {
+                '-'
+            }
+        })
         .collect::<String>()
         .split('-')
         .filter(|s| !s.is_empty())

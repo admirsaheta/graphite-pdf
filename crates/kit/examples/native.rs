@@ -25,8 +25,7 @@ async fn main() -> Result<()> {
     let body_size = resolved_number(&resolved, "lineHeight")?;
     let panel_color = color_from_hex(resolved_string(&resolved, "backgroundColor")?)?;
     let title_color = color_from_hex(resolved_string(&resolved, "color")?)?;
-    let standard_font =
-        standard_font_from_name(resolved_string(&resolved, "fontSourceStandard")?)?;
+    let standard_font = standard_font_from_name(resolved_string(&resolved, "fontSourceStandard")?)?;
 
     let descriptor = FontDescriptor::new(standard_font.family_name())
         .with_style(standard_font.font_style())
@@ -88,7 +87,14 @@ async fn main() -> Result<()> {
                 .title("GraphitePDF Native Asset Example")
                 .author("graphitepdf")
                 .subject("kit example for font, image, and stylesheet usage")
-                .keywords(["graphitepdf", "kit", "font", "image", "stylesheet", "example"]),
+                .keywords([
+                    "graphitepdf",
+                    "kit",
+                    "font",
+                    "image",
+                    "stylesheet",
+                    "example",
+                ]),
         )
         .with_page(page_size, content)
         .save(&path)?;

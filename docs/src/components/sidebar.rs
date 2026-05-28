@@ -1,7 +1,7 @@
+use crate::content::{NAV, NavSection};
+use crate::router::Route;
 use yew::prelude::*;
 use yew_router::prelude::*;
-use crate::router::Route;
-use crate::content::{NAV, NavSection};
 
 #[derive(Properties, PartialEq)]
 pub struct SidebarProps {

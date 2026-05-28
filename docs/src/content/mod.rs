@@ -208,29 +208,101 @@ pub const NAV: &[NavSection] = &[
     NavSection {
         label: "Getting Started",
         items: &[
-            NavItem { label: "Introduction",  section: "getting-started", page: "introduction" },
-            NavItem { label: "Installation",  section: "getting-started", page: "installation" },
-            NavItem { label: "Quick Start",   section: "getting-started", page: "quickstart" },
+            NavItem {
+                label: "Introduction",
+                section: "getting-started",
+                page: "introduction",
+            },
+            NavItem {
+                label: "Installation",
+                section: "getting-started",
+                page: "installation",
+            },
+            NavItem {
+                label: "Quick Start",
+                section: "getting-started",
+                page: "quickstart",
+            },
         ],
     },
     NavSection {
         label: "Crates",
         items: &[
-            NavItem { label: "document",   section: "crates", page: "document" },
-            NavItem { label: "errors",     section: "crates", page: "errors" },
-            NavItem { label: "font",       section: "crates", page: "font" },
-            NavItem { label: "image",      section: "crates", page: "image" },
-            NavItem { label: "kit",        section: "crates", page: "kit" },
-            NavItem { label: "layout",     section: "crates", page: "layout" },
-            NavItem { label: "math",       section: "crates", page: "math" },
-            NavItem { label: "primitives", section: "crates", page: "primitives" },
-            NavItem { label: "render",     section: "crates", page: "render" },
-            NavItem { label: "renderer",   section: "crates", page: "renderer" },
-            NavItem { label: "style",      section: "crates", page: "style" },
-            NavItem { label: "stylesheet", section: "crates", page: "stylesheet" },
-            NavItem { label: "svg",        section: "crates", page: "svg" },
-            NavItem { label: "textkit",    section: "crates", page: "textkit" },
-            NavItem { label: "utils",      section: "crates", page: "utils" },
+            NavItem {
+                label: "document",
+                section: "crates",
+                page: "document",
+            },
+            NavItem {
+                label: "errors",
+                section: "crates",
+                page: "errors",
+            },
+            NavItem {
+                label: "font",
+                section: "crates",
+                page: "font",
+            },
+            NavItem {
+                label: "image",
+                section: "crates",
+                page: "image",
+            },
+            NavItem {
+                label: "kit",
+                section: "crates",
+                page: "kit",
+            },
+            NavItem {
+                label: "layout",
+                section: "crates",
+                page: "layout",
+            },
+            NavItem {
+                label: "math",
+                section: "crates",
+                page: "math",
+            },
+            NavItem {
+                label: "primitives",
+                section: "crates",
+                page: "primitives",
+            },
+            NavItem {
+                label: "render",
+                section: "crates",
+                page: "render",
+            },
+            NavItem {
+                label: "renderer",
+                section: "crates",
+                page: "renderer",
+            },
+            NavItem {
+                label: "style",
+                section: "crates",
+                page: "style",
+            },
+            NavItem {
+                label: "stylesheet",
+                section: "crates",
+                page: "stylesheet",
+            },
+            NavItem {
+                label: "svg",
+                section: "crates",
+                page: "svg",
+            },
+            NavItem {
+                label: "textkit",
+                section: "crates",
+                page: "textkit",
+            },
+            NavItem {
+                label: "utils",
+                section: "crates",
+                page: "utils",
+            },
         ],
     },
 ];

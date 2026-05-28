@@ -285,11 +285,31 @@ pub struct ViewBox {
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum TransformOperation {
-    Translate { x: f32, y: f32 },
-    Scale { x: f32, y: f32 },
-    Rotate { degrees: f32, cx: f32, cy: f32 },
-    Skew { x_degrees: f32, y_degrees: f32 },
-    Matrix { a: f32, b: f32, c: f32, d: f32, e: f32, f: f32 },
+    Translate {
+        x: f32,
+        y: f32,
+    },
+    Scale {
+        x: f32,
+        y: f32,
+    },
+    Rotate {
+        degrees: f32,
+        cx: f32,
+        cy: f32,
+    },
+    Skew {
+        x_degrees: f32,
+        y_degrees: f32,
+    },
+    Matrix {
+        a: f32,
+        b: f32,
+        c: f32,
+        d: f32,
+        e: f32,
+        f: f32,
+    },
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -574,11 +594,8 @@ impl RenderEngine {
         node: &SafeLayoutNode,
         path: Vec<usize>,
     ) -> Result<Vec<RenderCommand>> {
-        let mut commands = background_commands(
-            context,
-            node.style.background_color,
-            PaintRole::Background,
-        );
+        let mut commands =
+            background_commands(context, node.style.background_color, PaintRole::Background);
 
         match &node.kind {
             SafeNodeKind::View => {}
@@ -602,9 +619,12 @@ impl RenderEngine {
             }
             SafeNodeKind::ImageAsset { asset } => {
                 let fit = self.options.image_fit;
-                let destination =
-                    fit_object(Size::new(asset.width(), asset.height()), node.content_frame, fit)
-                        .bounds;
+                let destination = fit_object(
+                    Size::new(asset.width(), asset.height()),
+                    node.content_frame,
+                    fit,
+                )
+                .bounds;
                 commands.push(RenderCommand::DrawImage(ImageRenderOp {
                     context: context.clone(),
                     source: RenderImageSource::Asset(asset.clone()),
@@ -671,7 +691,10 @@ impl RenderEngine {
         svg: &SvgNode,
     ) -> Result<Vec<RenderCommand>> {
         let natural_size = resolve_svg_size(svg)?;
-        let view_box = svg.props.get("viewBox").and_then(|value| parse_view_box(value));
+        let view_box = svg
+            .props
+            .get("viewBox")
+            .and_then(|value| parse_view_box(value));
         let fit = self.options.svg_fit;
         let fitted = fit_object(natural_size, context.content_frame, fit);
         let mut commands = Vec::new();
@@ -730,7 +753,9 @@ impl RenderEngine {
                     color: Color::BLACK,
                     font: node.font_descriptor().cloned(),
                     font_source: None,
-                    font_size: first_span.map(|span| span.font_size()).unwrap_or(Pt::new(12.0)),
+                    font_size: first_span
+                        .map(|span| span.font_size())
+                        .unwrap_or(Pt::new(12.0)),
                     line_height: None,
                     block: Some(block.clone()),
                     layout: None,
@@ -783,7 +808,9 @@ pub fn border_commands(context: &RenderContext, border: &Border) -> Vec<RenderCo
         (BorderSidePosition::Bottom, border.bottom),
         (BorderSidePosition::Left, border.left),
     ] {
-        if let Some(border) = value && border.width.value() > 0.0 {
+        if let Some(border) = value
+            && border.width.value() > 0.0
+        {
             commands.push(RenderCommand::StrokeBorder(BorderRenderOp {
                 context: context.clone(),
                 bounds: context.frame,
@@ -926,9 +953,11 @@ pub fn parse_transform(input: &str) -> Result<Vec<TransformOperation>> {
 }
 
 pub fn compose_transform(operations: &[TransformOperation]) -> AffineTransform {
-    operations.iter().fold(AffineTransform::identity(), |matrix, op| {
-        matrix.multiply(transform_matrix(*op))
-    })
+    operations
+        .iter()
+        .fold(AffineTransform::identity(), |matrix, op| {
+            matrix.multiply(transform_matrix(*op))
+        })
 }
 
 pub fn parse_view_box(input: &str) -> Option<ViewBox> {
@@ -950,7 +979,10 @@ pub fn parse_view_box(input: &str) -> Option<ViewBox> {
 }
 
 pub fn resolve_svg_size(svg: &SvgNode) -> Result<Size> {
-    let view_box = svg.props.get("viewBox").and_then(|value| parse_view_box(value));
+    let view_box = svg
+        .props
+        .get("viewBox")
+        .and_then(|value| parse_view_box(value));
     let width = svg
         .props
         .get("width")
@@ -1202,10 +1234,9 @@ fn parse_angle(value: Option<&str>, original: &str) -> Result<f32> {
         })?;
         Ok(radians.to_degrees())
     } else {
-        parse_float(trimmed.trim_end_matches("deg"))
-            .ok_or_else(|| Error::InvalidTransform {
-                input: original.to_string(),
-            })
+        parse_float(trimmed.trim_end_matches("deg")).ok_or_else(|| Error::InvalidTransform {
+            input: original.to_string(),
+        })
     }
 }
 
@@ -1213,11 +1244,9 @@ fn transform_matrix(operation: TransformOperation) -> AffineTransform {
     match operation {
         TransformOperation::Translate { x, y } => AffineTransform::translate(x, y),
         TransformOperation::Scale { x, y } => AffineTransform::scale(x, y),
-        TransformOperation::Rotate { degrees, cx, cy } => {
-            AffineTransform::translate(cx, cy)
-                .multiply(AffineTransform::rotate(degrees))
-                .multiply(AffineTransform::translate(-cx, -cy))
-        }
+        TransformOperation::Rotate { degrees, cx, cy } => AffineTransform::translate(cx, cy)
+            .multiply(AffineTransform::rotate(degrees))
+            .multiply(AffineTransform::translate(-cx, -cy)),
         TransformOperation::Skew {
             x_degrees,
             y_degrees,
@@ -1532,7 +1561,10 @@ where
         Ok(self.render_snapshot()?.document())
     }
 
-    pub fn render_with<B: RenderBackend>(&mut self, renderer: &mut Renderer<B>) -> Result<B::Output> {
+    pub fn render_with<B: RenderBackend>(
+        &mut self,
+        renderer: &mut Renderer<B>,
+    ) -> Result<B::Output> {
         renderer.render(self.render_document()?)
     }
 
@@ -1730,8 +1762,11 @@ impl PdfRenderBackend {
             return self.write_text_layout(page, operation, layout, writer, content);
         }
 
-        let font_name =
-            self.ensure_font(writer, operation.font.as_ref(), operation.font_source.as_ref());
+        let font_name = self.ensure_font(
+            writer,
+            operation.font.as_ref(),
+            operation.font_source.as_ref(),
+        );
         let origin = text_origin(page, operation);
         let line_height = operation
             .line_height
@@ -1747,7 +1782,8 @@ impl PdfRenderBackend {
 
         let mut lines = operation.text.lines();
         if let Some(first_line) = lines.next() {
-            writeln!(content, "({}) Tj", escape_pdf_text(first_line)).map_err(string_write_error)?;
+            writeln!(content, "({}) Tj", escape_pdf_text(first_line))
+                .map_err(string_write_error)?;
             for line in lines {
                 content.push_str("T*\n");
                 writeln!(content, "({}) Tj", escape_pdf_text(line)).map_err(string_write_error)?;
@@ -1786,8 +1822,13 @@ impl PdfRenderBackend {
                 - (operation.context.content_frame.origin.y + fragment.baseline().value());
 
             content.push_str("BT\n");
-            writeln!(content, "/{} {} Tf", font_name, fragment.font_size().value())
-                .map_err(string_write_error)?;
+            writeln!(
+                content,
+                "/{} {} Tf",
+                font_name,
+                fragment.font_size().value()
+            )
+            .map_err(string_write_error)?;
             push_fill_color(content, operation.color)?;
             writeln!(content, "1 0 0 1 {} {} Tm", x, y).map_err(string_write_error)?;
             writeln!(content, "({}) Tj", escape_pdf_text(fragment.text()))
@@ -1804,7 +1845,8 @@ impl PdfRenderBackend {
         operation: &ImageRenderOp,
         content: &mut String,
     ) -> Result<()> {
-        let pdf_y = page.size.height - operation.destination.origin.y - operation.destination.size.height;
+        let pdf_y =
+            page.size.height - operation.destination.origin.y - operation.destination.size.height;
 
         let rendered = match &operation.source {
             RenderImageSource::Asset(image) => render_image_to_page_content_with_options(
@@ -1831,10 +1873,11 @@ impl PdfRenderBackend {
         };
 
         write_comment(content, &format!("image {}", operation.context.label()))?;
-        content
-            .push_str(std::str::from_utf8(&rendered).map_err(|error| Error::Backend {
+        content.push_str(
+            std::str::from_utf8(&rendered).map_err(|error| Error::Backend {
                 message: format!("image content was not valid UTF-8: {error}"),
-            })?);
+            })?,
+        );
         if !content.ends_with('\n') {
             content.push('\n');
         }
@@ -1847,7 +1890,8 @@ impl PdfRenderBackend {
         operation: &SvgRenderOp,
         content: &mut String,
     ) -> Result<()> {
-        let pdf_y = page.size.height - operation.destination.origin.y - operation.destination.size.height;
+        let pdf_y =
+            page.size.height - operation.destination.origin.y - operation.destination.size.height;
         let options = SvgRenderOptions::new()
             .position(operation.destination.origin.x as f64, pdf_y as f64)
             .size(
@@ -1856,28 +1900,25 @@ impl PdfRenderBackend {
             );
 
         let bytes = match &operation.source {
-            SvgRenderSource::Svg(svg) => render_svg_node_to_page_content_with_options(svg, &options)?,
+            SvgRenderSource::Svg(svg) => {
+                render_svg_node_to_page_content_with_options(svg, &options)?
+            }
             SvgRenderSource::Math { svg, .. } => {
                 render_svg_node_to_page_content_with_options(svg, &options)?
             }
         };
 
         write_comment(content, &format!("svg {}", operation.context.label()))?;
-        content
-            .push_str(std::str::from_utf8(&bytes).map_err(|error| Error::Backend {
-                message: format!("svg content was not valid UTF-8: {error}"),
-            })?);
+        content.push_str(std::str::from_utf8(&bytes).map_err(|error| Error::Backend {
+            message: format!("svg content was not valid UTF-8: {error}"),
+        })?);
         if !content.ends_with('\n') {
             content.push('\n');
         }
         Ok(())
     }
 
-    fn write_transform(
-        &self,
-        operation: &TransformRenderOp,
-        content: &mut String,
-    ) -> Result<()> {
+    fn write_transform(&self, operation: &TransformRenderOp, content: &mut String) -> Result<()> {
         write_comment(content, &format!("push {}", operation.context.label()))?;
         content.push_str("q\n");
         writeln!(
@@ -1922,7 +1963,10 @@ impl PdfRenderBackend {
         writer: &mut PdfWriter,
         content: &mut String,
     ) -> Result<()> {
-        write_comment(content, &format!("form {} {}", operation.name, operation.context.label()))?;
+        write_comment(
+            content,
+            &format!("form {} {}", operation.name, operation.context.label()),
+        )?;
         content.push_str("q\n");
         for command in &operation.commands {
             self.encode_command(page, command, writer, content)?;
@@ -2084,7 +2128,8 @@ fn pdf_bounds(page: &RenderPage, bounds: Bounds) -> Bounds {
 
 fn text_origin(page: &RenderPage, operation: &TextRenderOp) -> (f32, f32) {
     let x = operation.context.content_frame.origin.x;
-    let y = page.size.height - operation.context.content_frame.origin.y - operation.font_size.value();
+    let y =
+        page.size.height - operation.context.content_frame.origin.y - operation.font_size.value();
     (x, y)
 }
 
@@ -2216,9 +2261,11 @@ mod tests {
     #[test]
     fn renders_safe_layout_documents_with_page_backgrounds_forms_and_debug() {
         let document = Document::new().with_page(
-            Page::new([Node::view([Node::text(text_block("Hello render"))]).with_style(
-                LayoutStyle::new().with_background_color(Color::rgb(0xee, 0xf2, 0xff)),
-            )])
+            Page::new([
+                Node::view([Node::text(text_block("Hello render"))]).with_style(
+                    LayoutStyle::new().with_background_color(Color::rgb(0xee, 0xf2, 0xff)),
+                ),
+            ])
             .with_size(Size::new(220.0, 140.0))
             .with_style(
                 LayoutStyle::new()
@@ -2246,10 +2293,12 @@ mod tests {
                 ..
             }) if *color == Color::rgb(0x11, 0x22, 0x33)
         ));
-        assert!(rendered.pages[0]
-            .commands
-            .iter()
-            .any(|command| matches!(command, RenderCommand::DrawDebug(_))));
+        assert!(
+            rendered.pages[0]
+                .commands
+                .iter()
+                .any(|command| matches!(command, RenderCommand::DrawDebug(_)))
+        );
 
         let form = rendered.pages[0]
             .commands
@@ -2259,14 +2308,16 @@ mod tests {
                 _ => None,
             })
             .expect("view should render as form");
-        assert!(form
-            .commands
-            .iter()
-            .any(|command| matches!(command, RenderCommand::DrawText(_))));
-        assert!(form
-            .commands
-            .iter()
-            .any(|command| matches!(command, RenderCommand::FillRect(_))));
+        assert!(
+            form.commands
+                .iter()
+                .any(|command| matches!(command, RenderCommand::DrawText(_)))
+        );
+        assert!(
+            form.commands
+                .iter()
+                .any(|command| matches!(command, RenderCommand::FillRect(_)))
+        );
     }
 
     #[test]
@@ -2284,8 +2335,7 @@ mod tests {
                 Node::text(text_block("Typed text")),
                 Node::image_asset(image).with_style(LayoutStyle::new().with_width(Pt::new(50.0))),
                 Node::svg(svg).with_style(LayoutStyle::new().with_width(Pt::new(40.0))),
-                Node::math("x^2 + y^2")
-                    .with_style(LayoutStyle::new().with_width(Pt::new(60.0))),
+                Node::math("x^2 + y^2").with_style(LayoutStyle::new().with_width(Pt::new(60.0))),
             ])
             .with_size(Size::new(240.0, 240.0))
             .with_style(LayoutStyle::new().with_padding(EdgeInsets::all(Pt::new(10.0)))),
@@ -2308,11 +2358,14 @@ mod tests {
             }
             _ => false,
         }));
-        assert!(commands
-            .iter()
-            .any(|command| matches!(command, RenderCommand::PushTransform(_))));
+        assert!(
+            commands
+                .iter()
+                .any(|command| matches!(command, RenderCommand::PushTransform(_)))
+        );
         assert!(commands.iter().any(|command| match command {
-            RenderCommand::DrawSvg(operation) => matches!(operation.source, SvgRenderSource::Svg(_)),
+            RenderCommand::DrawSvg(operation) =>
+                matches!(operation.source, SvgRenderSource::Svg(_)),
             _ => false,
         }));
         assert!(commands.iter().any(|command| match command {

@@ -1,6 +1,6 @@
+use crate::router::Route;
 use yew::prelude::*;
 use yew_router::prelude::*;
-use crate::router::Route;
 
 #[component]
 pub fn Navbar() -> Html {

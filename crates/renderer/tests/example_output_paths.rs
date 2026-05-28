@@ -69,7 +69,8 @@ fn honors_explicit_output_file_path() {
             std::env::set_var("GRAPHITEPDF_OUTPUT", &exact);
         }
 
-        let path = support::output_path("pipeline").expect("explicit output file path should resolve");
+        let path =
+            support::output_path("pipeline").expect("explicit output file path should resolve");
 
         assert_eq!(path, exact);
         assert!(path.parent().is_some_and(Path::exists));
@@ -90,7 +91,13 @@ fn honors_output_directory_override() {
         let path = support::output_path("pipeline").expect("output dir override should resolve");
 
         assert!(path.starts_with(&dir));
-        assert_eq!(path.extension().and_then(|value| value.to_str()), Some("pdf"));
-        assert!(path.parent().is_some_and(|parent| parent == dir && parent.exists()));
+        assert_eq!(
+            path.extension().and_then(|value| value.to_str()),
+            Some("pdf")
+        );
+        assert!(
+            path.parent()
+                .is_some_and(|parent| parent == dir && parent.exists())
+        );
     });
 }

@@ -15,7 +15,11 @@ pub enum Error {
     InvalidFontSize { size: f32 },
 
     #[error("text range `{start}..{end}` is invalid for content length {len}")]
-    InvalidTextRange { start: usize, end: usize, len: usize },
+    InvalidTextRange {
+        start: usize,
+        end: usize,
+        len: usize,
+    },
 
     #[error("text range `{start}..{end}` must align to UTF-8 boundaries")]
     NonCharacterBoundaryRange { start: usize, end: usize },

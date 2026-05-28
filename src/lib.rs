@@ -6,6 +6,10 @@ pub mod renderer;
 pub mod style;
 pub mod textkit;
 
+pub use crate::layout as layout_crate;
+pub use crate::render as render_crate;
+pub use crate::renderer as renderer_crate;
+pub use crate::textkit as textkit_crate;
 pub use document::{Document, ImageNode, ImageSource, Node, NodeKind, PdfMetadata, TextNode};
 pub use error::{GraphitePdfError, Result};
 pub use graphitepdf_errors as errors;
@@ -17,11 +21,9 @@ pub use graphitepdf_image::{
     resolve_image, resolve_image_with_options,
 };
 pub use graphitepdf_kit as kit;
-pub use crate::layout as layout_crate;
 pub use graphitepdf_layout::{
     LayoutContent as CoreLayoutContent, LayoutDocument as CoreLayoutDocument,
-    LayoutEngine as CoreLayoutEngine, LayoutNode as CoreLayoutNode,
-    LayoutPage as CoreLayoutPage,
+    LayoutEngine as CoreLayoutEngine, LayoutNode as CoreLayoutNode, LayoutPage as CoreLayoutPage,
 };
 pub use graphitepdf_math as math;
 pub use graphitepdf_math::{
@@ -29,18 +31,13 @@ pub use graphitepdf_math::{
     render_math, render_math_with_options,
 };
 pub use graphitepdf_primitives as primitives;
-pub use crate::render as render_crate;
 pub use graphitepdf_render::{
     RenderCommand, RenderDocument as CoreRenderDocument, RenderEngine as CoreRenderEngine,
     RenderPage as CoreRenderPage,
 };
-pub use crate::renderer as renderer_crate;
-pub use renderer::{NoopRenderBackend, RenderBackend, Renderer};
 pub use graphitepdf_stylesheet as stylesheet;
 pub use graphitepdf_svg as svg;
 pub use graphitepdf_svg::{SvgNode, SvgNodeKind, SvgProps, parse_svg, try_parse_svg};
-pub use crate::textkit as textkit_crate;
-pub use textkit::{TextBlock, TextSpan};
 pub use kit::{
     Canvas, DocumentBuilder, FontWeight, LineCap, LineJoin, Metadata, Object, Page, PageMargins,
     PageSize, SvgRenderOptions, TextAlignment, TextBuilder, TextRenderingMode, ToPdfPageContent,
@@ -48,11 +45,13 @@ pub use kit::{
     render_svg_node_to_page_content, render_svg_node_to_page_content_with_options,
 };
 pub use primitives::{Bounds, Color, Point, Pt, Size};
+pub use renderer::{NoopRenderBackend, RenderBackend, Renderer};
 pub use style::{
     AlignItems, EdgeInsets, FlexDirection, FontDescriptor, FontSource, FontStyle,
     FontVariantWeight, JustifyContent, StandardFont, Style, StyleValue, Stylesheet,
     StylesheetContainer, StylesheetExpandedStyle, StylesheetMap, StylesheetSafeStyle,
 };
+pub use textkit::{TextBlock, TextSpan};
 
 #[cfg(test)]
 mod tests {

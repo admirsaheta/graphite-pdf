@@ -56,7 +56,9 @@ pub fn extract_toc(markdown: &str) -> Vec<TocEntry> {
             in_code_block = !in_code_block;
             continue;
         }
-        if in_code_block { continue; }
+        if in_code_block {
+            continue;
+        }
 
         let (level, text) = if trimmed.starts_with("### ") {
             (3u8, &trimmed[4..])
@@ -69,14 +71,24 @@ pub fn extract_toc(markdown: &str) -> Vec<TocEntry> {
         let anchor = text
             .to_lowercase()
             .chars()
-            .map(|c| if c.is_alphanumeric() || c == '-' { c } else { '-' })
+            .map(|c| {
+                if c.is_alphanumeric() || c == '-' {
+                    c
+                } else {
+                    '-'
+                }
+            })
             .collect::<String>()
             .split('-')
             .filter(|s| !s.is_empty())
             .collect::<Vec<_>>()
             .join("-");
 
-        entries.push(TocEntry { level, text: text.to_string(), anchor });
+        entries.push(TocEntry {
+            level,
+            text: text.to_string(),
+            anchor,
+        });
     }
 
     entries

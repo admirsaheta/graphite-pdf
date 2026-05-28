@@ -118,8 +118,9 @@ impl Node {
         let mut style = self.style.to_layout_style();
 
         match &self.kind {
-            NodeKind::View { children } => LayoutNode::view(children.iter().map(LayoutNode::from))
-                .with_style(style),
+            NodeKind::View { children } => {
+                LayoutNode::view(children.iter().map(LayoutNode::from)).with_style(style)
+            }
             NodeKind::Text(text) => text
                 .to_text_block()
                 .map(LayoutNode::text)
@@ -199,9 +200,9 @@ impl ImageNode {
     fn to_layout_node(&self) -> LayoutNode {
         match &self.source {
             ImageSource::Asset(asset) => LayoutNode::image_asset(asset.clone()),
-            ImageSource::Path(_)
-            | ImageSource::Bytes(_)
-            | ImageSource::AssetSource(_) => LayoutNode::image_source(self.source.as_asset_source()),
+            ImageSource::Path(_) | ImageSource::Bytes(_) | ImageSource::AssetSource(_) => {
+                LayoutNode::image_source(self.source.as_asset_source())
+            }
         }
     }
 }
@@ -299,9 +300,7 @@ impl From<ImageSource> for AssetImageSource {
 
 fn asset_image_source(asset: &ImageAsset) -> AssetImageSource {
     match asset {
-        ImageAsset::Raster(image) => {
-            DataImageSource::new(image.data.clone(), image.format).into()
-        }
+        ImageAsset::Raster(image) => DataImageSource::new(image.data.clone(), image.format).into(),
         ImageAsset::Svg(image) => {
             DataImageSource::new(image.raw_data.clone(), ImageFormat::Svg).into()
         }

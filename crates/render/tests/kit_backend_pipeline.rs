@@ -49,7 +49,9 @@ fn layout_documents_render_to_real_pdf_bytes_via_kit_backend() {
 #[test]
 fn renderer_session_emits_real_pdf_output_for_layout_documents() {
     let mut session = RendererSession::new(sample_document());
-    let pdf = session.to_bytes().expect("renderer session should emit PDF bytes");
+    let pdf = session
+        .to_bytes()
+        .expect("renderer session should emit PDF bytes");
     let decoded_streams = decode_pdf_streams(&pdf);
 
     assert!(pdf.starts_with(b"%PDF-1.7"));
@@ -60,15 +62,13 @@ fn renderer_session_emits_real_pdf_output_for_layout_documents() {
 #[test]
 fn unresolved_image_sources_are_resolved_before_pdf_encoding() {
     let document = Document::new().with_page(
-        Page::new([Node::image_source(DataImageSource::new(
-            tiny_png(),
-            ImageFormat::Png,
-        ))
-        .with_style(
-            LayoutStyle::new()
-                .with_width(Pt::new(18.0))
-                .with_height(Pt::new(18.0)),
-        )])
+        Page::new([
+            Node::image_source(DataImageSource::new(tiny_png(), ImageFormat::Png)).with_style(
+                LayoutStyle::new()
+                    .with_width(Pt::new(18.0))
+                    .with_height(Pt::new(18.0)),
+            ),
+        ])
         .with_size(Size::new(120.0, 120.0))
         .with_style(LayoutStyle::new().with_padding(EdgeInsets::all(Pt::new(12.0)))),
     );
@@ -140,11 +140,15 @@ fn decode_pdf_streams(pdf: &[u8]) -> String {
 }
 
 fn contains_bytes(haystack: &[u8], needle: &[u8]) -> bool {
-    haystack.windows(needle.len()).any(|window| window == needle)
+    haystack
+        .windows(needle.len())
+        .any(|window| window == needle)
 }
 
 fn find_bytes(haystack: &[u8], needle: &[u8]) -> Option<usize> {
-    haystack.windows(needle.len()).position(|window| window == needle)
+    haystack
+        .windows(needle.len())
+        .position(|window| window == needle)
 }
 
 fn tiny_png() -> Vec<u8> {

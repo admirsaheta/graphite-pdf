@@ -99,7 +99,9 @@ impl From<LayoutEngine> for graphitepdf_layout::LayoutEngine {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::document::{Document as CompatDocument, ImageNode, Node as CompatNode, NodeKind, TextNode};
+    use crate::document::{
+        Document as CompatDocument, ImageNode, Node as CompatNode, NodeKind, TextNode,
+    };
     use crate::style::{Style, StyleValue, Stylesheet, StylesheetContainer};
     use graphitepdf_font::{FontStyle, FontWeight as FontVariantWeight};
     use graphitepdf_image::RemoteImageSource;

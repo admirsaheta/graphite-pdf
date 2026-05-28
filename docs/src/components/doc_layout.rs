@@ -1,5 +1,5 @@
-use yew::prelude::*;
 use crate::components::sidebar::Sidebar;
+use yew::prelude::*;
 
 #[derive(Properties, PartialEq)]
 pub struct DocLayoutProps {

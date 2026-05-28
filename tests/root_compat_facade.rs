@@ -2,8 +2,8 @@ use graphitepdf::{
     Document, Node, NodeKind, PdfMetadata, Style, StyleValue, Stylesheet, StylesheetContainer,
     TextNode,
 };
-use graphitepdf::{layout, render, renderer};
 use graphitepdf::{document, style};
+use graphitepdf::{layout, render, renderer};
 
 #[test]
 fn root_layout_facade_accepts_compat_documents() {
@@ -46,7 +46,6 @@ fn root_layout_facade_accepts_compat_documents() {
             .map(|descriptor| descriptor.family()),
         Some("Inter")
     );
-
 }
 
 #[test]
@@ -79,12 +78,13 @@ fn root_render_and_renderer_facades_work_with_compat_documents() {
         renderer::render_to_bytes(&document).expect("renderer facade should accept root documents");
 
     assert_eq!(rendered.pages.len(), 1);
-    assert!(rendered.pages[0]
-        .commands
-        .iter()
-        .any(|command| matches!(command, render::RenderCommand::DrawText(_))));
+    assert!(
+        rendered.pages[0]
+            .commands
+            .iter()
+            .any(|command| matches!(command, render::RenderCommand::DrawText(_)))
+    );
     assert!(bytes.starts_with(b"%PDF-1.7"));
-
 }
 
 #[test]
@@ -116,7 +116,10 @@ fn root_document_module_keeps_legacy_image_height_adapter() {
 
     let layout_node = layout::Node::from(&node);
 
-    assert_eq!(layout_node.style().height, Some(graphitepdf::Pt::new(120.0)));
+    assert_eq!(
+        layout_node.style().height,
+        Some(graphitepdf::Pt::new(120.0))
+    );
 }
 
 #[test]
@@ -140,7 +143,10 @@ fn root_style_module_keeps_compat_style_conversions() {
     let round_tripped = style::Style::from(layout_style.clone());
 
     assert_eq!(descriptor.family(), "Inter");
-    assert_eq!(descriptor.font_weight(), graphitepdf::FontVariantWeight::BOLD);
+    assert_eq!(
+        descriptor.font_weight(),
+        graphitepdf::FontVariantWeight::BOLD
+    );
     assert_eq!(compat_style.justify_content, style::JustifyContent::Center);
     assert_eq!(layout_style.font_family.as_deref(), Some("Inter"));
     assert_eq!(round_tripped.font_family.as_deref(), Some("Inter"));

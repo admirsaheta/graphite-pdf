@@ -91,7 +91,8 @@ mod tests {
 
     #[test]
     fn test_document_builder_accepts_concrete_graphitepdf_font_types() {
-        let (doc, font_name) = DocumentBuilder::new().add_font(graphitepdf_font::StandardFont::CourierBold);
+        let (doc, font_name) =
+            DocumentBuilder::new().add_font(graphitepdf_font::StandardFont::CourierBold);
         let text = TextBuilder::new()
             .font(&font_name, 24.0)
             .position(100.0, 700.0)
