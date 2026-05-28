@@ -17,21 +17,22 @@ impl LayoutEngine {
         let pages = document
             .pages()
             .iter()
-            .map(|page| self.layout_page(page.size(), page.style(), page.children()))
+            .map(|page| {
+                let size = Size::new(612.0, 792.0);
+                self.layout_page(size, page.style(), match page.kind() {
+                    NodeKind::View { children } => children,
+                    _ => &[],
+                })
+            })
             .collect::<Result<Vec<_>>>()?;
 
         Ok(LayoutDocument {
-            metadata: document.metadata().clone(),
+            metadata: document.get_metadata().clone(),
             pages,
         })
     }
 
-    fn layout_page(
-        &self,
-        size: Size,
-        page_style: &Style,
-        children: &[Node],
-    ) -> Result<LayoutPage> {
+    fn layout_page(&self, size: Size, page_style: &Style, children: &[Node]) -> Result<LayoutPage> {
         let mut cursor_y = page_style.padding.top.value();
         let nodes = children
             .iter()
@@ -55,16 +56,18 @@ impl LayoutEngine {
         let style = node.style().clone();
         let x = parent_x + style.margin.left.value();
         let y = parent_y + style.margin.top.value();
-        let width = style
-            .width
-            .map(|value| value.value())
-            .unwrap_or_else(|| (available_width - style.margin.left.value() - style.margin.right.value()).max(0.0));
+        let width = style.width.map(|value| value.value()).unwrap_or_else(|| {
+            (available_width - style.margin.left.value() - style.margin.right.value()).max(0.0)
+        });
         let default_height = match node.kind() {
             NodeKind::Text(TextNode { .. }) => 20.0,
             NodeKind::Image(_) => 120.0,
             NodeKind::View { .. } => 0.0,
         };
-        let mut height = style.height.map(|value| value.value()).unwrap_or(default_height);
+        let mut height = style
+            .height
+            .map(|value| value.value())
+            .unwrap_or(default_height);
 
         let content = match node.kind() {
             NodeKind::View { children } => {
@@ -72,8 +75,12 @@ impl LayoutEngine {
                 let children = children
                     .iter()
                     .map(|child| {
-                        let child_layout =
-                            self.layout_node(child, x + style.padding.left.value(), child_cursor_y, width)?;
+                        let child_layout = self.layout_node(
+                            child,
+                            x + style.padding.left.value(),
+                            child_cursor_y,
+                            width,
+                        )?;
                         child_cursor_y +=
                             child_layout.frame.size.height + child.style().margin.bottom.value();
                         Ok(child_layout)

@@ -15,5 +15,3 @@ readme = "README.md"
 
 [lib]
 path = "src/lib.rs"
-
-[dependencies]

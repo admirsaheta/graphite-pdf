@@ -1,131 +1,80 @@
 use crate::style::Style;
-use graphitepdf_primitives::Size;
+use std::path::PathBuf;
 
 #[derive(Clone, Debug, Default)]
+pub struct PdfMetadata {
+    pub title: Option<String>,
+    pub author: Option<String>,
+    pub subject: Option<String>,
+    pub keywords: Vec<String>,
+    pub creator: Option<String>,
+    pub producer: Option<String>,
+}
+
+#[derive(Clone, Debug)]
 pub struct Document {
     metadata: PdfMetadata,
-    pages: Vec<Page>,
+    pages: Vec<Node>,
 }
 
 impl Document {
     pub fn new() -> Self {
-        Self::default()
+        Self {
+            metadata: PdfMetadata::default(),
+            pages: Vec::new(),
+        }
     }
 
-    pub fn with_metadata(mut self, metadata: PdfMetadata) -> Self {
+    pub fn set_metadata(mut self, metadata: PdfMetadata) -> Self {
         self.metadata = metadata;
         self
     }
 
-    pub fn with_page(mut self, page: Page) -> Self {
+    pub fn add_page(mut self, page: Node) -> Self {
         self.pages.push(page);
         self
     }
 
-    pub fn add_page(&mut self, page: Page) {
-        self.pages.push(page);
-    }
-
-    pub fn metadata(&self) -> &PdfMetadata {
+    pub fn get_metadata(&self) -> &PdfMetadata {
         &self.metadata
     }
 
-    pub fn pages(&self) -> &[Page] {
+    pub fn pages(&self) -> &[Node] {
         &self.pages
     }
 }
 
-#[derive(Clone, Debug)]
-pub struct Page {
-    size: Size,
-    style: Style,
-    children: Vec<Node>,
-}
-
-impl Page {
-    pub fn new(size: Size) -> Self {
-        Self {
-            size,
-            style: Style::default(),
-            children: Vec::new(),
-        }
-    }
-
-    pub fn with_style(mut self, style: Style) -> Self {
-        self.style = style;
-        self
-    }
-
-    pub fn with_child(mut self, child: Node) -> Self {
-        self.children.push(child);
-        self
-    }
-
-    pub fn add_child(&mut self, child: Node) {
-        self.children.push(child);
-    }
-
-    pub fn size(&self) -> Size {
-        self.size
-    }
-
-    pub fn style(&self) -> &Style {
-        &self.style
-    }
-
-    pub fn children(&self) -> &[Node] {
-        &self.children
+impl Default for Document {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
 #[derive(Clone, Debug)]
 pub struct Node {
-    style: Style,
     kind: NodeKind,
+    style: Style,
 }
 
 impl Node {
-    pub fn new(kind: NodeKind) -> Self {
-        Self {
-            style: Style::default(),
-            kind,
-        }
-    }
-
-    pub fn view(children: Vec<Node>) -> Self {
-        Self::new(NodeKind::View { children })
-    }
-
-    pub fn text(content: impl Into<String>) -> Self {
-        Self::new(NodeKind::Text(TextNode {
-            content: content.into(),
-        }))
-    }
-
-    pub fn image(source: ImageSource) -> Self {
-        Self::new(NodeKind::Image(ImageNode {
-            source,
-            fit: ImageFit::default(),
-        }))
-    }
-
-    pub fn with_style(mut self, style: Style) -> Self {
-        self.style = style;
-        self
-    }
-
-    pub fn style(&self) -> &Style {
-        &self.style
+    pub fn new(kind: NodeKind, style: Style) -> Self {
+        Self { kind, style }
     }
 
     pub fn kind(&self) -> &NodeKind {
         &self.kind
     }
+
+    pub fn style(&self) -> &Style {
+        &self.style
+    }
 }
 
 #[derive(Clone, Debug)]
 pub enum NodeKind {
-    View { children: Vec<Node> },
+    View {
+        children: Vec<Node>,
+    },
     Text(TextNode),
     Image(ImageNode),
 }
@@ -138,27 +87,10 @@ pub struct TextNode {
 #[derive(Clone, Debug)]
 pub struct ImageNode {
     pub source: ImageSource,
-    pub fit: ImageFit,
 }
 
 #[derive(Clone, Debug)]
 pub enum ImageSource {
-    Path(String),
+    Path(PathBuf),
     Bytes(Vec<u8>),
-}
-
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
-pub enum ImageFit {
-    #[default]
-    Contain,
-    Cover,
-    Fill,
-}
-
-#[derive(Clone, Debug, Default)]
-pub struct PdfMetadata {
-    pub title: Option<String>,
-    pub author: Option<String>,
-    pub subject: Option<String>,
-    pub keywords: Vec<String>,
 }

@@ -7,13 +7,22 @@
 </p>
 
 <p align="center">
-  Geometry, color, units, and semantic document tags for layout and rendering pipelines.
+  <img alt="Crate" src="https://img.shields.io/badge/crate-graphitepdf--primitives-1E1E1C?style=for-the-badge&labelColor=060604&color=D4581A" />
+  <img alt="Focus" src="https://img.shields.io/badge/focus-geometry_%7C_units_%7C_tags-C4C4C0?style=for-the-badge&labelColor=2E2E2C&color=3A3A38" />
+  <img alt="Rust" src="https://img.shields.io/badge/rust-1.85%2B-F58040?style=for-the-badge&labelColor=2E2E2C&color=7C2806" />
 </p>
 
-# graphitepdf-primitives
+---
 
-This crate provides the common vocabulary used by higher-level layout, document, and
-rendering layers without pulling in engine-specific behavior.
+## Overview
+
+`graphitepdf-primitives` provides the common vocabulary used by higher-level layout,
+document, and rendering layers without pulling in engine-specific behavior.
+
+It contains the low-level types that other GraphitePDF crates can share when they need
+stable geometry, measurement, color, and semantic document tags.
+
+---
 
 ## Scope
 
@@ -25,11 +34,15 @@ rendering layers without pulling in engine-specific behavior.
 
 The crate is intended to stay small, explicit, and reusable across other crates.
 
+---
+
 ## Installation
 
 ```bash
 cargo add graphitepdf-primitives
 ```
+
+---
 
 ## API Summary
 
@@ -38,6 +51,8 @@ cargo add graphitepdf-primitives
 | Element tags | `Document`, `Page`, `View`, `Text` |
 | Geometry | `Bounds`, `Point`, `Size` |
 | Units and color | `Pt`, `Color` |
+
+---
 
 ## Example
 
@@ -62,6 +77,8 @@ fn main() {
 }
 ```
 
+---
+
 ## Design Principles
 
 - keep foundational APIs renderer-agnostic
@@ -69,11 +86,15 @@ fn main() {
 - avoid unnecessary dependencies
 - make shared document and layout types easy to reuse
 
+---
+
 ## Role In GraphitePDF
 
 This crate sits near the base of the GraphitePDF stack. It exists so downstream
 crates can share geometry, units, and semantic element tags without duplicating
 definitions or inheriting unrelated runtime concerns.
+
+---
 
 ## License
 

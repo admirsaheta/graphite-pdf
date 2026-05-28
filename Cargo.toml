@@ -1,5 +1,5 @@
 [workspace]
-members = [".", "crates/primitives", "crates/utils"]
+members = [".", "crates/errors", "crates/kit", "crates/primitives", "crates/utils"]
 resolver = "3"
 
 [workspace.package]
@@ -26,4 +26,7 @@ documentation = "https://docs.rs/graphitepdf"
 keywords = ["pdf", "renderer", "layout", "document", "graphics"]
 
 [dependencies]
+graphitepdf-errors = { path = "crates/errors", version = "0.1.0" }
 graphitepdf-primitives = { path = "crates/primitives", version = "0.1.0" }
+graphitepdf-utils = { path = "crates/utils", version = "0.1.0" }
+graphitepdf-kit = { path = "crates/kit", version = "0.1.0" }

@@ -1,2 +1,8 @@
 /target
+/.artifacts
 .agents
+.trae
+
+#to be deleted
+pdfkit
+architecture

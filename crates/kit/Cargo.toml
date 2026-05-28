@@ -1,0 +1,51 @@
+[package]
+name = "graphitepdf-kit"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license-file.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+categories.workspace = true
+description = "A core PDF generation library for Rust: document building, text, vector graphics, images, and more."
+documentation = "https://docs.rs/graphitepdf-kit"
+keywords = ["pdf", "pdf-generation", "graphics", "fonts", "rendering"]
+
+[lib]
+name = "graphitepdf_kit"
+path = "src/lib.rs"
+
+[features]
+default = ["std-fonts", "vector", "tables", "images"]
+std-fonts = []
+vector = []
+tables = []
+images = ["jpeg-decoder", "png"]
+patterns = []
+security = []
+outlines = []
+parallel = ["rayon"]
+fonts-engine = ["ttf-parser"]
+full = ["std-fonts", "vector", "tables", "images", "parallel", "security", "patterns", "outlines", "fonts-engine"]
+tracing = ["dep:tracing"]
+
+[dependencies]
+graphitepdf-errors = { path = "../errors", version = "0.1.0" }
+flate2 = { version = "1.0", features = ["zlib"] }
+base64 = { version = "0.22", optional = true }
+rand = "0.10"
+rayon = { version = "1.10", optional = true }
+jpeg-decoder = { version = "0.3", optional = true }
+png = { version = "0.18", optional = true }
+tracing = { version = "0.1", optional = true }
+ttf-parser = { version = "0.25", optional = true }
+
+[dev-dependencies]
+anyhow = "1.0"
+proptest = "1.4"
+criterion = "0.8"
+
+[[bench]]
+name = "benchmarks"
+harness = false

@@ -29,11 +29,7 @@ pub fn get<'a>(value: &Value, path: impl Into<Path<'a>>, fallback: Value) -> Val
         };
     });
 
-    if missing {
-        fallback
-    } else {
-        current.clone()
-    }
+    if missing { fallback } else { current.clone() }
 }
 
 pub fn map_values<F>(object: &Object, mut mapper: F) -> Object
@@ -98,14 +94,13 @@ mod tests {
             ("b", Value::from(1_i32)),
             ("c", Value::from("ignored")),
         ]));
-        let value = Value::from(
-            [("a".to_string(), nested)]
-                .into_iter()
-                .collect::<Object>(),
-        );
+        let value = Value::from([("a".to_string(), nested)].into_iter().collect::<Object>());
 
         assert_eq!(get(&value, &["a", "b"], Value::Null), Value::from(1_i32));
-        assert_eq!(get(&value, &["a", "missing"], Value::from(0_i32)), Value::from(0_i32));
+        assert_eq!(
+            get(&value, &["a", "missing"], Value::from(0_i32)),
+            Value::from(0_i32)
+        );
     }
 
     #[test]
