@@ -1,6 +1,17 @@
 name: Release
 
 on:
+  # Auto-release on every push to master (except the bump commit itself,
+  # which contains [skip ci] so it doesn't re-trigger this workflow).
+  push:
+    branches: [master]
+    paths-ignore:
+      - "docs/**"        # docs-only → handled by docs.yml, not a release
+      - "**.md"          # README / CHANGELOG edits aren't releases
+      - ".githooks/**"
+      - ".github/workflows/docs.yml"
+
+  # Manual escape hatch — choose level and dry-run flag via the UI.
   workflow_dispatch:
     inputs:
       bump:
@@ -23,6 +34,9 @@ env:
   CARGO_TERM_COLOR: always
   CARGO_INCREMENTAL: 0
   RUST_BACKTRACE: short
+  # When triggered by push, inputs are empty — fall back to safe defaults.
+  BUMP:    ${{ inputs.bump    || 'minor' }}
+  DRY_RUN: ${{ inputs.dry_run || 'false' }}
 
 # ── Publish order: leaves first, facade last ──────────────────────────────────
 # errors → primitives → utils → svg → stylesheet → font → math → textkit →
@@ -86,7 +100,7 @@ jobs:
           MAJOR=$(echo "$CURRENT" | cut -d. -f1)
           MINOR=$(echo "$CURRENT" | cut -d. -f2)
           PATCH=$(echo "$CURRENT" | cut -d. -f3 | sed 's/-.*//')
-          case "${{ inputs.bump }}" in
+          case "${{ env.BUMP }}" in
             major) NEXT="$((MAJOR+1)).0.0" ;;
             minor) NEXT="${MAJOR}.$((MINOR+1)).0" ;;
             patch) NEXT="${MAJOR}.${MINOR}.$((PATCH+1))" ;;
@@ -98,7 +112,7 @@ jobs:
 
       # ── Update workspace version ────────────────────────────────────────────
       - name: Bump workspace version
-        if: inputs.dry_run == false
+        if: env.DRY_RUN == 'false'
         run: |
           CURRENT="${{ steps.ver.outputs.current }}"
           NEXT="${{ steps.ver.outputs.next }}"
@@ -125,7 +139,7 @@ jobs:
 
       # ── Publish all crates to crates.io ────────────────────────────────────
       - name: Publish crates
-        if: inputs.dry_run == false
+        if: env.DRY_RUN == 'false'
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
         run: |
@@ -155,7 +169,7 @@ jobs:
           done
 
       - name: Dry-run summary
-        if: inputs.dry_run == true
+        if: env.DRY_RUN == 'true'
         run: |
           echo "### Dry run — nothing published or pushed" >> "$GITHUB_STEP_SUMMARY"
           echo "Would publish: **${{ steps.ver.outputs.current }} → ${{ steps.ver.outputs.next }}**" >> "$GITHUB_STEP_SUMMARY"
@@ -163,7 +177,7 @@ jobs:
 
       # ── Commit, tag, push ────────────────────────────────────────────────────
       - name: Commit + tag + push
-        if: inputs.dry_run == false
+        if: env.DRY_RUN == 'false'
         run: |
           TAG="${{ steps.ver.outputs.tag }}"
           git add Cargo.toml Cargo.lock CHANGELOG.md
@@ -174,7 +188,7 @@ jobs:
 
       # ── GitHub Release ───────────────────────────────────────────────────────
       - name: Create GitHub Release
-        if: inputs.dry_run == false
+        if: env.DRY_RUN == 'false'
         uses: softprops/action-gh-release@v2
         with:
           tag_name:   ${{ steps.ver.outputs.tag }}
