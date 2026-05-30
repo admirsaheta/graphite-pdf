@@ -3,5 +3,4 @@
 .agents
 .trae
 
-#to be deleted
-architecture
+.env

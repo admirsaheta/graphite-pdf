@@ -143,6 +143,8 @@ jobs:
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
         run: |
+          VERSION="${{ steps.ver.outputs.next }}"
+
           CRATES=(
             graphitepdf-errors
             graphitepdf-primitives
@@ -161,11 +163,67 @@ jobs:
             graphitepdf-document
             graphitepdf
           )
+
+          # ── helpers ──────────────────────────────────────────────────────────
+
+          # Returns HTTP status for a crates.io API endpoint.
+          cio_status() {
+            curl -sf -o /dev/null -w "%{http_code}" \
+              -H "User-Agent: graphite-pdf-release-ci" \
+              "https://crates.io/api/v1/crates/$1/$2" 2>/dev/null || echo "000"
+          }
+
+          # Returns number of published versions (0 = brand-new crate).
+          cio_version_count() {
+            curl -sf \
+              -H "User-Agent: graphite-pdf-release-ci" \
+              "https://crates.io/api/v1/crates/$1" 2>/dev/null \
+              | jq '.versions | length // 0' 2>/dev/null || echo "0"
+          }
+
+          publish_with_retry() {
+            local crate="$1"
+            local max=5 delay=60 attempt=0
+            while [ $attempt -lt $max ]; do
+              attempt=$((attempt+1))
+              echo "  attempt $attempt/$max …"
+              if cargo publish --package "$crate" --no-verify --allow-dirty 2>&1; then
+                return 0
+              fi
+              if [ $attempt -lt $max ]; then
+                echo "  rate-limited or transient error — waiting ${delay}s"
+                sleep $delay
+                delay=$((delay * 2))   # 60 → 120 → 240 → 480
+              fi
+            done
+            return 1
+          }
+
+          # ── main loop ────────────────────────────────────────────────────────
+
           for crate in "${CRATES[@]}"; do
-            echo "::group::$crate @ ${{ steps.ver.outputs.next }}"
-            cargo publish --package "$crate" --no-verify --allow-dirty
+            echo "::group::$crate @ $VERSION"
+
+            # Skip if this exact version is already on crates.io (idempotent re-run).
+            if [ "$(cio_status "$crate" "$VERSION")" = "200" ]; then
+              echo "  ✓ already published — skipping"
+              echo "::endgroup::"
+              continue
+            fi
+
+            publish_with_retry "$crate"
             echo "::endgroup::"
-            sleep 25    # wait for crates.io index propagation
+
+            # crates.io rate limits differ for brand-new vs existing crates:
+            #   new crate  → 1 per 10 min  → wait 660 s
+            #   new version → ~1 per 30 s  → wait 40 s (index propagation + margin)
+            COUNT=$(cio_version_count "$crate")
+            if [ "$COUNT" -le 1 ]; then
+              echo "  new crate on crates.io — waiting 660 s for rate-limit window"
+              sleep 660
+            else
+              sleep 40
+            fi
           done
 
       - name: Dry-run summary
