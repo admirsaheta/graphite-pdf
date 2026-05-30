@@ -1033,7 +1033,7 @@ dependencies = [
 
 [[package]]
 name = "graphitepdf"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "graphitepdf-document",
  "graphitepdf-errors",
@@ -1054,7 +1054,7 @@ dependencies = [
 
 [[package]]
 name = "graphitepdf-document"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "graphitepdf-image",
  "graphitepdf-layout",
@@ -1067,14 +1067,14 @@ dependencies = [
 
 [[package]]
 name = "graphitepdf-errors"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "thiserror 2.0.18",
 ]
 
 [[package]]
 name = "graphitepdf-font"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "base64",
  "graphitepdf-errors",
@@ -1086,7 +1086,7 @@ dependencies = [
 
 [[package]]
 name = "graphitepdf-image"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "base64",
  "graphitepdf-errors",
@@ -1098,7 +1098,7 @@ dependencies = [
 
 [[package]]
 name = "graphitepdf-kit"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "base64",
@@ -1122,7 +1122,7 @@ dependencies = [
 
 [[package]]
 name = "graphitepdf-layout"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "graphitepdf-errors",
  "graphitepdf-font",
@@ -1137,7 +1137,7 @@ dependencies = [
 
 [[package]]
 name = "graphitepdf-math"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "graphitepdf-errors",
  "graphitepdf-primitives",
@@ -1148,11 +1148,11 @@ dependencies = [
 
 [[package]]
 name = "graphitepdf-primitives"
-version = "0.1.0"
+version = "0.2.0"
 
 [[package]]
 name = "graphitepdf-render"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "flate2",
  "graphitepdf-errors",
@@ -1171,7 +1171,7 @@ dependencies = [
 
 [[package]]
 name = "graphitepdf-renderer"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "graphitepdf-errors",
  "graphitepdf-font",
@@ -1185,7 +1185,7 @@ dependencies = [
 
 [[package]]
 name = "graphitepdf-style"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "graphitepdf-font",
  "graphitepdf-layout",
@@ -1195,7 +1195,7 @@ dependencies = [
 
 [[package]]
 name = "graphitepdf-stylesheet"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "graphitepdf-errors",
  "indexmap",
@@ -1204,7 +1204,7 @@ dependencies = [
 
 [[package]]
 name = "graphitepdf-svg"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "graphitepdf-errors",
  "graphitepdf-primitives",
@@ -1214,7 +1214,7 @@ dependencies = [
 
 [[package]]
 name = "graphitepdf-textkit"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "graphitepdf-errors",
  "graphitepdf-font",
@@ -1224,7 +1224,7 @@ dependencies = [
 
 [[package]]
 name = "graphitepdf-utils"
-version = "0.1.0"
+version = "0.2.0"
 
 [[package]]
 name = "half"

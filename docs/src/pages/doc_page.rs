@@ -156,7 +156,7 @@ fn DocFooter(props: &DocFooterProps) -> Html {
     html! {
         <footer class="mt-16 flex items-center justify-between border-t border-[#2E2E2C] pt-6">
             <div class="flex items-center gap-2">
-                <img src="/public/graphitepdf-mark.svg" alt="" class="h-5 w-5 opacity-30" />
+                <img src="https://tvnzqqaaq45nrfqc.public.blob.vercel-storage.com/graphite_pdf/graphitepdf-favicon.svg" alt="" class="h-5 w-5 opacity-30" />
                 <span class="text-[12px] text-[#585856]">{"GraphitePDF Docs"}</span>
             </div>
             <a

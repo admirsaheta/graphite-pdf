@@ -7,12 +7,21 @@ use yew_router::prelude::*;
 pub struct SidebarProps {
     pub current_section: String,
     pub current_page: String,
+    /// When true renders without `hidden lg:flex` — used inside the mobile drawer.
+    #[prop_or_default]
+    pub mobile: bool,
 }
 
 #[component]
 pub fn Sidebar(props: &SidebarProps) -> Html {
+    let class = if props.mobile {
+        "flex flex-col w-full overflow-y-auto"
+    } else {
+        "hidden lg:flex flex-col w-60 shrink-0 border-r border-white/[0.07] bg-[#111110] overflow-y-auto"
+    };
+
     html! {
-        <aside class="hidden lg:flex flex-col w-60 shrink-0 border-r border-white/[0.07] bg-[#111110] overflow-y-auto">
+        <aside class={class}>
             <div class="px-4 py-6 space-y-6">
                 { for NAV.iter().map(|section| html! {
                     <SidebarSection
@@ -42,7 +51,8 @@ fn SidebarSection(props: &SidebarSectionProps) -> Html {
             </p>
             <ul class="space-y-0.5">
                 { for props.section.items.iter().map(|item| {
-                    let is_active = props.current_section == item.section && props.current_page == item.page;
+                    let is_active = props.current_section == item.section
+                        && props.current_page == item.page;
                     let link_class = if is_active {
                         "sidebar-link-active flex items-center gap-2 px-2 py-1.5 rounded-md text-sm transition-colors"
                     } else {
@@ -51,7 +61,10 @@ fn SidebarSection(props: &SidebarSectionProps) -> Html {
                     html! {
                         <li>
                             <Link<Route>
-                                to={Route::Doc { section: item.section.to_string(), page: item.page.to_string() }}
+                                to={Route::Doc {
+                                    section: item.section.to_string(),
+                                    page: item.page.to_string(),
+                                }}
                                 classes={link_class}
                             >
                                 if is_active {

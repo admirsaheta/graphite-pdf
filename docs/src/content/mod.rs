@@ -4,31 +4,43 @@
 pub fn get_static_content(section: &str, page: &str) -> Option<&'static str> {
     match (section, page) {
         // Getting started
-        ("getting-started", "introduction") => Some(include_str!("../../content/getting-started/introduction.md")),
-        ("getting-started", "installation") => Some(include_str!("../../content/getting-started/installation.md")),
-        ("getting-started", "quickstart")   => Some(include_str!("../../content/getting-started/quickstart.md")),
+        ("getting-started", "introduction") => Some(include_str!(
+            "../../content/getting-started/introduction.md"
+        )),
+        ("getting-started", "installation") => Some(include_str!(
+            "../../content/getting-started/installation.md"
+        )),
+        ("getting-started", "quickstart") => {
+            Some(include_str!("../../content/getting-started/quickstart.md"))
+        }
 
         // Architecture
-        ("architecture", "overview")          => Some(include_str!("../../content/architecture/overview.md")),
-        ("architecture", "rendering-process") => Some(include_str!("../../content/architecture/rendering-process.md")),
-        ("architecture", "compatibility")     => Some(include_str!("../../content/architecture/compatibility.md")),
+        ("architecture", "overview") => {
+            Some(include_str!("../../content/architecture/overview.md"))
+        }
+        ("architecture", "rendering-process") => Some(include_str!(
+            "../../content/architecture/rendering-process.md"
+        )),
+        ("architecture", "compatibility") => {
+            Some(include_str!("../../content/architecture/compatibility.md"))
+        }
 
         // Crates
-        ("crates", "errors")      => Some(include_str!("../../content/crates/errors.md")),
-        ("crates", "primitives")  => Some(include_str!("../../content/crates/primitives.md")),
-        ("crates", "utils")       => Some(include_str!("../../content/crates/utils.md")),
-        ("crates", "svg")         => Some(include_str!("../../content/crates/svg.md")),
-        ("crates", "stylesheet")  => Some(include_str!("../../content/crates/stylesheet.md")),
-        ("crates", "font")        => Some(include_str!("../../content/crates/font.md")),
-        ("crates", "math")        => Some(include_str!("../../content/crates/math.md")),
-        ("crates", "textkit")     => Some(include_str!("../../content/crates/textkit.md")),
-        ("crates", "image")       => Some(include_str!("../../content/crates/image.md")),
-        ("crates", "kit")         => Some(include_str!("../../content/crates/kit.md")),
-        ("crates", "layout")      => Some(include_str!("../../content/crates/layout.md")),
-        ("crates", "render")      => Some(include_str!("../../content/crates/render.md")),
-        ("crates", "renderer")    => Some(include_str!("../../content/crates/renderer.md")),
-        ("crates", "style")       => Some(include_str!("../../content/crates/style.md")),
-        ("crates", "document")    => Some(include_str!("../../content/crates/document.md")),
+        ("crates", "errors") => Some(include_str!("../../content/crates/errors.md")),
+        ("crates", "primitives") => Some(include_str!("../../content/crates/primitives.md")),
+        ("crates", "utils") => Some(include_str!("../../content/crates/utils.md")),
+        ("crates", "svg") => Some(include_str!("../../content/crates/svg.md")),
+        ("crates", "stylesheet") => Some(include_str!("../../content/crates/stylesheet.md")),
+        ("crates", "font") => Some(include_str!("../../content/crates/font.md")),
+        ("crates", "math") => Some(include_str!("../../content/crates/math.md")),
+        ("crates", "textkit") => Some(include_str!("../../content/crates/textkit.md")),
+        ("crates", "image") => Some(include_str!("../../content/crates/image.md")),
+        ("crates", "kit") => Some(include_str!("../../content/crates/kit.md")),
+        ("crates", "layout") => Some(include_str!("../../content/crates/layout.md")),
+        ("crates", "render") => Some(include_str!("../../content/crates/render.md")),
+        ("crates", "renderer") => Some(include_str!("../../content/crates/renderer.md")),
+        ("crates", "style") => Some(include_str!("../../content/crates/style.md")),
+        ("crates", "document") => Some(include_str!("../../content/crates/document.md")),
 
         // graphitepdf (facade) — rich README on GitHub, fall through to fetch
         _ => None,
@@ -93,6 +105,26 @@ pub const NAV: &[NavSection] = &[
             NavItem { label: "Overview",          section: "architecture", page: "overview" },
             NavItem { label: "Rendering Process", section: "architecture", page: "rendering-process" },
             NavItem { label: "Compatibility",     section: "architecture", page: "compatibility" },
+        ],
+    },
+    NavSection {
+        label: "Architecture",
+        items: &[
+            NavItem {
+                label: "Overview",
+                section: "architecture",
+                page: "overview",
+            },
+            NavItem {
+                label: "Rendering Process",
+                section: "architecture",
+                page: "rendering-process",
+            },
+            NavItem {
+                label: "Compatibility",
+                section: "architecture",
+                page: "compatibility",
+            },
         ],
     },
     NavSection {
