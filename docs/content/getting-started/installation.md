@@ -8,7 +8,7 @@ Add `graphitepdf` to your `Cargo.toml` for one-import access to the full stack:
 
 ```toml
 [dependencies]
-graphitepdf = "0.1"
+graphitepdf = "0.2"
 ```
 
 ## Using individual crates
@@ -17,9 +17,9 @@ If you only need part of the stack, depend on individual crates directly:
 
 ```toml
 [dependencies]
-graphitepdf-layout    = "0.1"
-graphitepdf-textkit   = "0.1"
-graphitepdf-renderer  = "0.1"
+graphitepdf-layout    = "0.2"
+graphitepdf-textkit   = "0.2"
+graphitepdf-renderer  = "0.2"
 ```
 
 ## Workspace setup
@@ -28,7 +28,7 @@ For a workspace that uses GraphitePDF across multiple crates, define it once in 
 
 ```toml
 [workspace.dependencies]
-graphitepdf = "0.1"
+graphitepdf = "0.2"
 ```
 
 Then in each member:

@@ -70,7 +70,7 @@ pub fn HomePage() -> Html {
                         {"\n"}
                         <span class="text-[#C4C4C0]">{"graphitepdf"}</span>
                         <span class="text-[#6E6E6C]">{" = "}</span>
-                        <span class="text-[#D4581A]">{r#""0.1""#}</span>
+                        <span class="text-[#D4581A]">{r#""0.2""#}</span>
                     </pre>
                 </div>
             </section>

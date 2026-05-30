@@ -6,7 +6,7 @@ This guide walks through producing a simple PDF document with GraphitePDF.
 
 ```toml
 [dependencies]
-graphitepdf = "0.1"
+graphitepdf = "0.2"
 ```
 
 ## 2. Create a document
