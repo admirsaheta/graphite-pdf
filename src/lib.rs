@@ -6,6 +6,11 @@ pub mod renderer;
 pub mod style;
 pub mod textkit;
 
+#[cfg(feature = "template")]
+pub mod template {
+    pub use graphitepdf_template::*;
+}
+
 pub use crate::layout as layout_crate;
 pub use crate::render as render_crate;
 pub use crate::renderer as renderer_crate;
@@ -38,6 +43,8 @@ pub use graphitepdf_render::{
 pub use graphitepdf_stylesheet as stylesheet;
 pub use graphitepdf_svg as svg;
 pub use graphitepdf_svg::{SvgNode, SvgNodeKind, SvgProps, parse_svg, try_parse_svg};
+#[cfg(feature = "template")]
+pub use graphitepdf_template::{PdfNode, pdf, styles, stylesheet};
 pub use kit::{
     Canvas, DocumentBuilder, FontWeight, LineCap, LineJoin, Metadata, Object, Page, PageMargins,
     PageSize, SvgRenderOptions, TextAlignment, TextBuilder, TextRenderingMode, ToPdfPageContent,

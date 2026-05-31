@@ -1048,6 +1048,7 @@ dependencies = [
  "graphitepdf-style",
  "graphitepdf-stylesheet",
  "graphitepdf-svg",
+ "graphitepdf-template",
  "graphitepdf-textkit",
  "graphitepdf-utils",
 ]
@@ -1210,6 +1211,45 @@ dependencies = [
  "graphitepdf-primitives",
  "quick-xml",
  "thiserror 1.0.69",
+]
+
+[[package]]
+name = "graphitepdf-template"
+version = "0.2.0"
+dependencies = [
+ "graphitepdf-image",
+ "graphitepdf-kit",
+ "graphitepdf-layout",
+ "graphitepdf-primitives",
+ "graphitepdf-template-macros",
+ "graphitepdf-textkit",
+]
+
+[[package]]
+name = "graphitepdf-template-example"
+version = "0.1.0"
+dependencies = [
+ "graphitepdf",
+ "graphitepdf-font",
+ "graphitepdf-image",
+ "graphitepdf-kit",
+ "graphitepdf-layout",
+ "graphitepdf-math",
+ "graphitepdf-primitives",
+ "graphitepdf-render",
+ "graphitepdf-stylesheet",
+ "graphitepdf-svg",
+ "graphitepdf-template-macros",
+ "graphitepdf-textkit",
+]
+
+[[package]]
+name = "graphitepdf-template-macros"
+version = "0.2.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.117",
 ]
 
 [[package]]
