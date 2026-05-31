@@ -110,7 +110,7 @@ members = [
 resolver = "3"
 
 [workspace.package]
-version = "0.2.0"
+version = "0.3.0"
 authors = ["admirsaheta <admir@flyrank.com>"]
 homepage = "https://github.com/admirsaheta/graphite-pdf"
 categories = [
@@ -123,69 +123,69 @@ edition = "2024"
 rust-version = "1.88"
 
 [workspace.dependencies.graphitepdf-document]
-version = "0.2.0"
+version = "0.3.0"
 path = "crates/document"
 
 [workspace.dependencies.graphitepdf-errors]
-version = "0.2.0"
+version = "0.3.0"
 path = "crates/errors"
 
 [workspace.dependencies.graphitepdf-font]
-version = "0.2.0"
+version = "0.3.0"
 path = "crates/font"
 
 [workspace.dependencies.graphitepdf-image]
-version = "0.2.0"
+version = "0.3.0"
 path = "crates/image"
 
 [workspace.dependencies.graphitepdf-kit]
-version = "0.2.0"
+version = "0.3.0"
 path = "crates/kit"
 
 [workspace.dependencies.graphitepdf-layout]
-version = "0.2.0"
+version = "0.3.0"
 path = "crates/layout"
 
 [workspace.dependencies.graphitepdf-math]
-version = "0.2.0"
+version = "0.3.0"
 path = "crates/math"
 
 [workspace.dependencies.graphitepdf-primitives]
-version = "0.2.0"
+version = "0.3.0"
 path = "crates/primitives"
 
 [workspace.dependencies.graphitepdf-render]
-version = "0.2.0"
+version = "0.3.0"
 path = "crates/render"
 
 [workspace.dependencies.graphitepdf-renderer]
-version = "0.2.0"
+version = "0.3.0"
 path = "crates/renderer"
 
 [workspace.dependencies.graphitepdf-style]
-version = "0.2.0"
+version = "0.3.0"
 path = "crates/style"
 
 [workspace.dependencies.graphitepdf-stylesheet]
-version = "0.2.0"
+version = "0.3.0"
 path = "crates/stylesheet"
 
 [workspace.dependencies.graphitepdf-svg]
-version = "0.2.0"
+version = "0.3.0"
 path = "crates/svg"
 
 [workspace.dependencies.graphitepdf-textkit]
-version = "0.2.0"
+version = "0.3.0"
 path = "crates/textkit"
 
 [workspace.dependencies.graphitepdf-template]
-version = "0.2.0"
+version = "0.3.0"
 path = "crates/template"
 
 [workspace.dependencies.graphitepdf-template-macros]
-version = "0.2.0"
+version = "0.3.0"
 path = "crates/template-macros"
 
 [workspace.dependencies.graphitepdf-utils]
-version = "0.2.0"
+version = "0.3.0"
 path = "crates/utils"
