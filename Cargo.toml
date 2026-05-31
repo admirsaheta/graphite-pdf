@@ -73,8 +73,16 @@ workspace = true
 [dependencies.graphitepdf-textkit]
 workspace = true
 
+[dependencies.graphitepdf-template]
+workspace = true
+optional = true
+
 [dependencies.graphitepdf-utils]
 workspace = true
+
+[features]
+default = []
+template = ["dep:graphitepdf-template"]
 
 [workspace]
 members = [
@@ -92,9 +100,12 @@ members = [
     "crates/style",
     "crates/stylesheet",
     "crates/svg",
+    "crates/template",
+    "crates/template-macros",
     "crates/textkit",
     "crates/utils",
     "docs",
+    "example",
 ]
 resolver = "3"
 
@@ -166,6 +177,14 @@ path = "crates/svg"
 [workspace.dependencies.graphitepdf-textkit]
 version = "0.2.0"
 path = "crates/textkit"
+
+[workspace.dependencies.graphitepdf-template]
+version = "0.2.0"
+path = "crates/template"
+
+[workspace.dependencies.graphitepdf-template-macros]
+version = "0.2.0"
+path = "crates/template-macros"
 
 [workspace.dependencies.graphitepdf-utils]
 version = "0.2.0"

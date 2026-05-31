@@ -1,0 +1,42 @@
+[package]
+name = "graphitepdf-template"
+description = "Template runtime support for GraphitePDF proc-macro based PDF authoring."
+
+[package.edition]
+workspace = true
+
+[package.rust-version]
+workspace = true
+
+[package.version]
+workspace = true
+
+[package.homepage]
+workspace = true
+
+[package.categories]
+workspace = true
+
+[package.license-file]
+workspace = true
+
+[package.repository]
+workspace = true
+
+[dependencies.graphitepdf-image]
+workspace = true
+
+[dependencies.graphitepdf-kit]
+workspace = true
+
+[dependencies.graphitepdf-layout]
+workspace = true
+
+[dependencies.graphitepdf-primitives]
+workspace = true
+
+[dependencies.graphitepdf-template-macros]
+workspace = true
+
+[dependencies.graphitepdf-textkit]
+workspace = true

@@ -1,0 +1,19 @@
+[package]
+name = "graphitepdf-template-example"
+version = "0.1.0"
+edition.workspace = true
+publish = false
+
+[dependencies]
+graphitepdf = { path = "..", features = ["template"] }
+graphitepdf-font = { path = "../crates/font" }
+graphitepdf-image = { path = "../crates/image" }
+graphitepdf-kit = { path = "../crates/kit" }
+graphitepdf-layout = { path = "../crates/layout" }
+graphitepdf-math = { path = "../crates/math" }
+graphitepdf-primitives = { path = "../crates/primitives" }
+graphitepdf-render = { path = "../crates/render" }
+graphitepdf-stylesheet = { path = "../crates/stylesheet" }
+graphitepdf-svg = { path = "../crates/svg" }
+graphitepdf-template-macros = { path = "../crates/template-macros" }
+graphitepdf-textkit = { path = "../crates/textkit" }

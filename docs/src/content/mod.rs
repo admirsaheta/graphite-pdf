@@ -25,6 +25,10 @@ pub fn get_static_content(section: &str, page: &str) -> Option<&'static str> {
             Some(include_str!("../../content/architecture/compatibility.md"))
         }
 
+        // Templating
+        ("templating", "overview") => Some(include_str!("../../content/templating/overview.md")),
+        ("templating", "macros") => Some(include_str!("../../content/templating/macros.md")),
+
         // Crates
         ("crates", "errors") => Some(include_str!("../../content/crates/errors.md")),
         ("crates", "primitives") => Some(include_str!("../../content/crates/primitives.md")),
@@ -41,6 +45,10 @@ pub fn get_static_content(section: &str, page: &str) -> Option<&'static str> {
         ("crates", "renderer") => Some(include_str!("../../content/crates/renderer.md")),
         ("crates", "style") => Some(include_str!("../../content/crates/style.md")),
         ("crates", "document") => Some(include_str!("../../content/crates/document.md")),
+        ("crates", "template") => Some(include_str!("../../content/crates/template.md")),
+        ("crates", "template-macros") => {
+            Some(include_str!("../../content/crates/template-macros.md"))
+        }
 
         // graphitepdf (facade) — rich README on GitHub, fall through to fetch
         _ => None,
@@ -94,17 +102,21 @@ pub const NAV: &[NavSection] = &[
     NavSection {
         label: "Getting Started",
         items: &[
-            NavItem { label: "Introduction", section: "getting-started", page: "introduction" },
-            NavItem { label: "Installation",  section: "getting-started", page: "installation" },
-            NavItem { label: "Quick Start",   section: "getting-started", page: "quickstart" },
-        ],
-    },
-    NavSection {
-        label: "Architecture",
-        items: &[
-            NavItem { label: "Overview",          section: "architecture", page: "overview" },
-            NavItem { label: "Rendering Process", section: "architecture", page: "rendering-process" },
-            NavItem { label: "Compatibility",     section: "architecture", page: "compatibility" },
+            NavItem {
+                label: "Introduction",
+                section: "getting-started",
+                page: "introduction",
+            },
+            NavItem {
+                label: "Installation",
+                section: "getting-started",
+                page: "installation",
+            },
+            NavItem {
+                label: "Quick Start",
+                section: "getting-started",
+                page: "quickstart",
+            },
         ],
     },
     NavSection {
@@ -128,23 +140,108 @@ pub const NAV: &[NavSection] = &[
         ],
     },
     NavSection {
+        label: "Templating",
+        items: &[
+            NavItem {
+                label: "Overview",
+                section: "templating",
+                page: "overview",
+            },
+            NavItem {
+                label: "Macro Reference",
+                section: "templating",
+                page: "macros",
+            },
+        ],
+    },
+    NavSection {
         label: "Crates",
         items: &[
-            NavItem { label: "document",   section: "crates", page: "document" },
-            NavItem { label: "errors",     section: "crates", page: "errors" },
-            NavItem { label: "font",       section: "crates", page: "font" },
-            NavItem { label: "image",      section: "crates", page: "image" },
-            NavItem { label: "kit",        section: "crates", page: "kit" },
-            NavItem { label: "layout",     section: "crates", page: "layout" },
-            NavItem { label: "math",       section: "crates", page: "math" },
-            NavItem { label: "primitives", section: "crates", page: "primitives" },
-            NavItem { label: "render",     section: "crates", page: "render" },
-            NavItem { label: "renderer",   section: "crates", page: "renderer" },
-            NavItem { label: "style",      section: "crates", page: "style" },
-            NavItem { label: "stylesheet", section: "crates", page: "stylesheet" },
-            NavItem { label: "svg",        section: "crates", page: "svg" },
-            NavItem { label: "textkit",    section: "crates", page: "textkit" },
-            NavItem { label: "utils",      section: "crates", page: "utils" },
+            NavItem {
+                label: "document",
+                section: "crates",
+                page: "document",
+            },
+            NavItem {
+                label: "errors",
+                section: "crates",
+                page: "errors",
+            },
+            NavItem {
+                label: "font",
+                section: "crates",
+                page: "font",
+            },
+            NavItem {
+                label: "image",
+                section: "crates",
+                page: "image",
+            },
+            NavItem {
+                label: "kit",
+                section: "crates",
+                page: "kit",
+            },
+            NavItem {
+                label: "layout",
+                section: "crates",
+                page: "layout",
+            },
+            NavItem {
+                label: "math",
+                section: "crates",
+                page: "math",
+            },
+            NavItem {
+                label: "primitives",
+                section: "crates",
+                page: "primitives",
+            },
+            NavItem {
+                label: "render",
+                section: "crates",
+                page: "render",
+            },
+            NavItem {
+                label: "renderer",
+                section: "crates",
+                page: "renderer",
+            },
+            NavItem {
+                label: "style",
+                section: "crates",
+                page: "style",
+            },
+            NavItem {
+                label: "stylesheet",
+                section: "crates",
+                page: "stylesheet",
+            },
+            NavItem {
+                label: "svg",
+                section: "crates",
+                page: "svg",
+            },
+            NavItem {
+                label: "template",
+                section: "crates",
+                page: "template",
+            },
+            NavItem {
+                label: "template-macros",
+                section: "crates",
+                page: "template-macros",
+            },
+            NavItem {
+                label: "textkit",
+                section: "crates",
+                page: "textkit",
+            },
+            NavItem {
+                label: "utils",
+                section: "crates",
+                page: "utils",
+            },
         ],
     },
 ];
